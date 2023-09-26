@@ -9,13 +9,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF_maze_generator", "WPF_maze_generator\WPF_maze_generator.csproj", "{B963EF3F-3D3A-4329-B5CF-18D074192456}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPF_maze_generator", "WPF_maze_generator\WPF_maze_generator.csproj", "{B963EF3F-3D3A-4329-B5CF-18D074192456}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF_physics_simulator", "WPF_physics_simulator\WPF_physics_simulator.csproj", "{05BD156F-8FF0-40DC-B560-37BDC9B992F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPF_physics_simulator", "WPF_physics_simulator\WPF_physics_simulator.csproj", "{05BD156F-8FF0-40DC-B560-37BDC9B992F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Globals", "Globals\Globals.csproj", "{3E979AC7-9DE8-48DB-90AD-DE6DF79736D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Globals", "Globals\Globals.csproj", "{3E979AC7-9DE8-48DB-90AD-DE6DF79736D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensionMethods", "ExtensionMethods\ExtensionMethods.csproj", "{C65B0106-24FD-422C-AE45-49EE46FA0D0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtensionMethods", "ExtensionMethods\ExtensionMethods.csproj", "{C65B0106-24FD-422C-AE45-49EE46FA0D0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityFunctions", "UtilityFunctions\UtilityFunctions.csproj", "{37334845-6040-45D0-854C-404C68A849B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{C65B0106-24FD-422C-AE45-49EE46FA0D0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C65B0106-24FD-422C-AE45-49EE46FA0D0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C65B0106-24FD-422C-AE45-49EE46FA0D0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37334845-6040-45D0-854C-404C68A849B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37334845-6040-45D0-854C-404C68A849B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37334845-6040-45D0-854C-404C68A849B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37334845-6040-45D0-854C-404C68A849B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

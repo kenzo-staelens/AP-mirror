@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ExtensionMethods;
+using UtilityFunctions;
 
 namespace Globals {
     public class Maze {
@@ -23,7 +23,7 @@ namespace Globals {
                     if (i != width - 1) neighbours[1] = maze[i + 1, j]; //cell to the right
                     if (j != 0) neighbours[2] = maze[i, j - 1]; //cell above
                     if (j != height - 1) neighbours[3] = maze[i, j + 1]; //cell below
-                    Extensions.Filter(ref neighbours);
+                    Utility.Filter(ref neighbours);
                     maze[i, j].Neighbours = neighbours;
                 }
             }
