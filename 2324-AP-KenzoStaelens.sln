@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtensionMethods", "Extensi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityFunctions", "UtilityFunctions\UtilityFunctions.csproj", "{37334845-6040-45D0-854C-404C68A849B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console_Test_Environment", "Console_Test_Environment\Console_Test_Environment.csproj", "{44030A2A-099D-4128-843A-6370D9F8C872}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{37334845-6040-45D0-854C-404C68A849B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37334845-6040-45D0-854C-404C68A849B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37334845-6040-45D0-854C-404C68A849B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44030A2A-099D-4128-843A-6370D9F8C872}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44030A2A-099D-4128-843A-6370D9F8C872}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44030A2A-099D-4128-843A-6370D9F8C872}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44030A2A-099D-4128-843A-6370D9F8C872}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

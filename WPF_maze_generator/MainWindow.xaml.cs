@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Globals;
 
 namespace WPF_maze_generator {
     /// <summary>
@@ -20,6 +21,8 @@ namespace WPF_maze_generator {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
+            Maze maze = new Maze(2, 3);
+            Console.WriteLine(maze.ToString());
         }
     }
 }
