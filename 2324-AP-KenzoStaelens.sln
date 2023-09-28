@@ -6,8 +6,8 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution items", "{6ED966BB-F367-4C90-BCD3-CD733F55F4CD}"
 	ProjectSection(SolutionItems) = preProject
 		opvolging.md = opvolging.md
+		default.txt = default.txt
 		README.md = README.md
-		testmaze.txt = testmaze.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPF_maze_generator", "WPF_maze_generator\WPF_maze_generator.csproj", "{B963EF3F-3D3A-4329-B5CF-18D074192456}"

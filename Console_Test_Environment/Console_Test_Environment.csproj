@@ -13,7 +13,7 @@
     <ProjectReference Include="..\Globals\Globals.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ContentWithTargetPath Include="..\testmaze.txt">
+    <ContentWithTargetPath Include="..\default.txt">
 	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>%(Filename)%(Extension)</TargetPath>
     </ContentWithTargetPath>

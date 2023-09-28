@@ -1,6 +1,7 @@
 ﻿using ExtensionMethods;
 using Globals;
 using Generators;
+using Components;
 
 namespace Console_Test_Environment {
     internal class Program {
@@ -8,7 +9,8 @@ namespace Console_Test_Environment {
             //Maze maze = new Maze(8, 8, false);
             //maze.maze[0,0].SetWall(3, true);
             MazeGeneratorFactory factory = new MazeGeneratorFactory();
-            IMazeGenerator gen = factory.Create(MazeGeneratorTypes.Static); //new StaticGenerator("./testmaze.txt");
+            MazeConstructionComponent constructionData = new MazeConstructionComponent(0, 0, "testmaze.txt");
+            IMazeGenerator gen = factory.Create(MazeGeneratorTypes.Static, constructionData); //new StaticGenerator("./testmaze.txt");
             Maze maze = gen.Generate();
             maze.Print();
             Console.WriteLine(String.Join(", ", maze.maze[0, 0].walls));

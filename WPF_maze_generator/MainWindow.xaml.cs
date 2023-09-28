@@ -32,7 +32,9 @@ namespace WPF_maze_generator {
         public void Generate(object sender, RoutedEventArgs e) {
             try {
                 MazeGeneratorFactory factory = new MazeGeneratorFactory();
-                IMazeGenerator gen = factory.Create(MazeGeneratorTypes.Static);
+                MazeConstructionComponent constuctionData = new MazeConstructionComponent(Int32.Parse(WidthTextBox.Text),
+                    Int32.Parse(HeightTextBox.Text), $"./{FilenameTextBox.Text}");
+                IMazeGenerator gen = factory.Create((MazeGeneratorTypes)Generator.SelectedItem, constuctionData);
                 Maze maze = gen.Generate();
                 Render(maze);
             }catch(Exception ex) {
@@ -92,25 +94,8 @@ namespace WPF_maze_generator {
                     if (cell.walls[2]) DrawableCanvas.Children.Add(line2);
                     if (cell.walls[3]) DrawableCanvas.Children.Add(line3);
                     if (cell.walls[1]) DrawableCanvas.Children.Add(line4);
-                    ErrorLabel.Content = String.Join(", ", cell.walls);
-                    ErrorLabel.Visibility = Visibility.Visible;
-                    //return;
-
                 }
             }
-            //testing with lines
-            /*Line myLine = new Line();
-            SolidColorBrush mySolidColorBrush = new SolidColorBrush();
-            mySolidColorBrush.Color = Color.FromRgb(0, 0, 0);
-            myLine.Stroke = mySolidColorBrush;
-            myLine.X1 = 1;
-            myLine.X2 = 50;
-            myLine.Y1 = 1;
-            myLine.Y2 = 1;
-            myLine.HorizontalAlignment = HorizontalAlignment.Left;
-            myLine.VerticalAlignment = VerticalAlignment.Center;
-            myLine.StrokeThickness = 2;
-            DrawableCanvas.Children.Add(myLine);*/
         }
     }
 }
