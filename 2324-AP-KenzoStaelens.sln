@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution 
 	ProjectSection(SolutionItems) = preProject
 		opvolging.md = opvolging.md
 		README.md = README.md
+		testmaze.txt = testmaze.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPF_maze_generator", "WPF_maze_generator\WPF_maze_generator.csproj", "{B963EF3F-3D3A-4329-B5CF-18D074192456}"
@@ -17,9 +18,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Globals", "Globals\Globals.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtensionMethods", "ExtensionMethods\ExtensionMethods.csproj", "{C65B0106-24FD-422C-AE45-49EE46FA0D0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityFunctions", "UtilityFunctions\UtilityFunctions.csproj", "{37334845-6040-45D0-854C-404C68A849B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilityFunctions", "UtilityFunctions\UtilityFunctions.csproj", "{37334845-6040-45D0-854C-404C68A849B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console_Test_Environment", "Console_Test_Environment\Console_Test_Environment.csproj", "{44030A2A-099D-4128-843A-6370D9F8C872}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console_Test_Environment", "Console_Test_Environment\Console_Test_Environment.csproj", "{44030A2A-099D-4128-843A-6370D9F8C872}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Components", "Components\Components.csproj", "{06528BE8-4A34-468D-B0CD-773020AF1883}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generators", "Generators\Generators.csproj", "{A2358CD7-EDC0-4B47-9AC2-390B34C3BDA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Datalaag", "Datalaag\Datalaag.csproj", "{D96CE3EA-E397-43E1-A484-884D4CF2C9A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +58,18 @@ Global
 		{44030A2A-099D-4128-843A-6370D9F8C872}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44030A2A-099D-4128-843A-6370D9F8C872}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44030A2A-099D-4128-843A-6370D9F8C872}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06528BE8-4A34-468D-B0CD-773020AF1883}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06528BE8-4A34-468D-B0CD-773020AF1883}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06528BE8-4A34-468D-B0CD-773020AF1883}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06528BE8-4A34-468D-B0CD-773020AF1883}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2358CD7-EDC0-4B47-9AC2-390B34C3BDA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2358CD7-EDC0-4B47-9AC2-390B34C3BDA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2358CD7-EDC0-4B47-9AC2-390B34C3BDA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2358CD7-EDC0-4B47-9AC2-390B34C3BDA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D96CE3EA-E397-43E1-A484-884D4CF2C9A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D96CE3EA-E397-43E1-A484-884D4CF2C9A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D96CE3EA-E397-43E1-A484-884D4CF2C9A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D96CE3EA-E397-43E1-A484-884D4CF2C9A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

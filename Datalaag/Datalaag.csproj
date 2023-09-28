@@ -6,9 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Components\Components.csproj" />
-    <ProjectReference Include="..\UtilityFunctions\UtilityFunctions.csproj" />
-  </ItemGroup>
-
 </Project>

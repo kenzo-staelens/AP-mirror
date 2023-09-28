@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Components\Components.csproj" />
-    <ProjectReference Include="..\UtilityFunctions\UtilityFunctions.csproj" />
+    <ProjectReference Include="..\Datalaag\Datalaag.csproj" />
+    <ProjectReference Include="..\Globals\Globals.csproj" />
   </ItemGroup>
 
 </Project>

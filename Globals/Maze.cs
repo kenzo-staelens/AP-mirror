@@ -4,18 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UtilityFunctions;
+using Components;
 
 namespace Globals {
-    public class Maze {
+    public struct Maze {
         //width, height in number of cells
         public Cell[,] maze;
+        public int Width { get; private set; }
+        public int Height { get; private set; }
 
         public Maze(int width, int height) : this(width, height, true) { }
         public Maze(int width, int height, bool isDefaultSet) {
+            this.Width = width;
+            this.Height = height;
             this.maze = new Cell[width, height];
             for(int i = 0; i < width; i++) {
                 for(int j = 0; j < height; j++) {
-                    maze[i, j] = new Cell(i, j, isDefaultSet);
+                    var components = new ValueType[] { new WallDataComponent(2) };
+                    maze[i, j] = new Cell(i, j, isDefaultSet, components);
                 }
             }
             for (int i = 0; i < width; i++) {

@@ -1,7 +1,12 @@
-﻿namespace Globals {
+﻿using Components;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
+
+namespace Globals {
     public class Cell {
-        int x, y;
+        public int x, y;
         public Cell[] Neighbours;
+        public ValueType[] components;
 
         private bool[] _walls;
         public bool[] walls {
@@ -14,9 +19,17 @@
             this._walls = new bool[]{ isDefaultSet, isDefaultSet, isDefaultSet, isDefaultSet}; // top, right, bottom, left
         }
 
-        public Cell(int x, int y, bool isDefaultSet, Cell[] Neighbours) : this(x, y, isDefaultSet) {
-            this.Neighbours = Neighbours;
-            
+        public Cell(int x, int y, bool isDefaultSet, Cell[] neighbours) : this(x, y, isDefaultSet) {
+            this.Neighbours = neighbours;
+        }
+
+        public Cell(int x, int y, bool isDefaultSet, ValueType[] components) : this(x,y,isDefaultSet){
+            this.components = components;
+        }
+
+        public Cell(int x, int y, bool isDefaultSet, Cell[] neighbours, ValueType[] components) : this(x, y, isDefaultSet){
+            this.Neighbours = neighbours;
+            this.components = components;
         }
 
         public void SetWall(int index, bool isSet) { this.SetWall(index, isSet, true); }
