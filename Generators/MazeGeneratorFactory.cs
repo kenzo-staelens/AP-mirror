@@ -10,7 +10,8 @@ namespace Generators {
         public IMazeGenerator Create(MazeGeneratorTypes type) {
             switch(type){
                 case MazeGeneratorTypes.Static:
-                    return new StaticGenerator("./testmaze.txt");
+                default:
+                    return new StaticGenerator("./testmaze.txt");//automatically breaks on return
             }
         }
     }

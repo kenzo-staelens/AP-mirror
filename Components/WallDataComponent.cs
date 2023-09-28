@@ -1,5 +1,5 @@
 ﻿namespace Components {
-    public struct WallDataComponent {
+    public struct WallDataComponent : IComponent {
         public int Width {
             get;
             private set;

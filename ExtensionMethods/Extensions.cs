@@ -30,12 +30,12 @@ namespace ExtensionMethods {
             int width = maze.maze.GetLength(1);
             int height = maze.maze.GetLength(0);
             for(int i = 0; i < width; i++) {
-                if (maze.maze[i, 0].walls[0]) Console.Write(".-");
+                if (maze.maze[0, i].walls[0]) Console.Write(".-");
                 else Console.Write(". ");
             }
             Console.WriteLine();
             for(int i = 0; i < height; i++) {
-                if (maze.maze[0, i].walls[3]) Console.Write("| ");
+                if (maze.maze[i, 0].walls[3]) Console.Write("| ");
                 else Console.Write("  ");
                 for (int j = 0; j < width; j++) {
                     if (maze.maze[i, j].walls[1]) { Console.Write("| "); }

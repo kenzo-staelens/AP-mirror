@@ -8,7 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Generators\Generators.csproj" />
     <ProjectReference Include="..\Globals\Globals.csproj" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <ContentWithTargetPath Include="..\testmaze.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>%(Filename)%(Extension)</TargetPath>
+    </ContentWithTargetPath>
   </ItemGroup>
 
 </Project>

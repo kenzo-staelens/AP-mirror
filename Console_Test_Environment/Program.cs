@@ -11,6 +11,10 @@ namespace Console_Test_Environment {
             IMazeGenerator gen = factory.Create(MazeGeneratorTypes.Static); //new StaticGenerator("./testmaze.txt");
             Maze maze = gen.Generate();
             maze.Print();
+            Console.WriteLine(String.Join(", ", maze.maze[0, 0].walls));
+            Console.WriteLine(String.Join(", ", maze.maze[0, 1].walls));
+            Console.WriteLine(String.Join(", ", maze.maze[1, 0].walls));
+            Console.WriteLine(String.Join(", ", maze.maze[1, 1].walls));
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Globals {
             this.maze = new Cell[width, height];
             for(int i = 0; i < width; i++) {
                 for(int j = 0; j < height; j++) {
-                    var components = new ValueType[] { new WallDataComponent(2) };
+                    var components = new IComponent[] { new WallDataComponent(2) };
                     maze[i, j] = new Cell(i, j, isDefaultSet, components);
                 }
             }
