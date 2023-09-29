@@ -7,7 +7,7 @@ using Datalaag;
 namespace Generators {
     internal class StaticGenerator : IMazeGenerator{
 
-        private string filename;
+        private readonly string filename;
         public StaticGenerator(String filename) {
             this.filename = filename;
         }
@@ -15,11 +15,11 @@ namespace Generators {
         public Maze Generate() {
             String[] mazeDataArray = FileManager.Load(this.filename).Split("\n");
             int[] dimensions = mazeDataArray[0].Split(" ").Select(Int32.Parse).ToArray();//should be of length 2
-            bool[][] integerMazeDataArray = mazeDataArray.Skip(1).Select(mazeDataConverter).ToArray();
+            bool[][] integerMazeDataArray = mazeDataArray.Skip(1).Select(MazeDataConverter).ToArray();
             if(dimensions.Length != 2 ) {
                 throw new ArgumentException($"invalid dimensions expected 2 values, received {dimensions.Length}");
             }
-            Maze maze = new Maze(dimensions[0], dimensions[1]);
+            Maze maze = new(dimensions[0], dimensions[1]);
             if (integerMazeDataArray.Length != maze.Width * maze.Height) {
                 throw new ArgumentException($"number of expected cells({maze.Width * maze.Height}) does not match number of given cells {integerMazeDataArray.Length}");
             }
@@ -34,7 +34,7 @@ namespace Generators {
             return maze;
         }
 
-        private bool[] mazeDataConverter(String str) {
+        private static bool[] MazeDataConverter(String str) {
             return str.Split(" ").Select(Int32.Parse).Select(Convert.ToBoolean).ToArray();
         }
     }

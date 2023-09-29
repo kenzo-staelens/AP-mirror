@@ -26,28 +26,31 @@ namespace ExtensionMethods {
             return s;
         }
 
-        public static void Print(this Maze maze) {
-            int width = maze.maze.GetLength(1);
-            int height = maze.maze.GetLength(0);
-            for(int i = 0; i < width; i++) {
-                if (maze.maze[0, i].walls[0]) Console.Write(".-");
-                else Console.Write(". ");
+        public static String Print(this Maze maze) {
+            String str = "";
+            int width = maze.maze.GetLength(0);
+            int height = maze.maze.GetLength(1);
+            
+            for (int i = 0; i < width; i++) {
+                if (maze.maze[i, 0].walls[0]) str+=".-";
+                else str+=". ";
             }
-            Console.WriteLine();
-            for(int i = 0; i < height; i++) {
-                if (maze.maze[i, 0].walls[3]) Console.Write("| ");
-                else Console.Write("  ");
+            str+=".\n";
+            for (int i = 0; i < height; i++) {
+                if (maze.maze[0, i].walls[3]) str+="| ";
+                else str+="  ";
                 for (int j = 0; j < width; j++) {
-                    if (maze.maze[i, j].walls[1]) { Console.Write("| "); }
-                    else { Console.Write("  "); }
+                    if (maze.maze[j, i].walls[1]) { str += "| "; }
+                    else { str += "  "; }
                 }
-                Console.WriteLine();
-                for (int j=0; j < height;j++) {
-                    if (maze.maze[i, j].walls[2]) { Console.Write(".-"); }
-                    else { Console.Write(". "); }
+                str += "\n";
+                for (int j=0; j < width;j++) {
+                    if (maze.maze[j, i].walls[2]) { str += ".-"; }
+                    else { str += ". "; }
                 }
-                Console.WriteLine();
+                str+=".\n";
             }
+            return str;
         }
 
         public static String ToPrintable<T>(this T[,] matrix) {

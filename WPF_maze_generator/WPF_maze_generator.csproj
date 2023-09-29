@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ExtensionMethods\ExtensionMethods.csproj" />
     <ProjectReference Include="..\Generators\Generators.csproj" />
     <ProjectReference Include="..\Globals\Globals.csproj" />
   </ItemGroup>

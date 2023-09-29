@@ -10,12 +10,11 @@ using System.Threading.Tasks;
 namespace Generators {
     public class MazeGeneratorFactory : IMazeGeneratorFactory {
         public IMazeGenerator Create(MazeGeneratorTypes type, MazeConstructionComponent constructionData) {
-            switch(type){
-                case MazeGeneratorTypes.Static:
-                    return new StaticGenerator(constructionData.Filename);//automatically breaks on return
-                default:
-                    throw new NotImplementedException();
-            }
+            return type switch {
+                MazeGeneratorTypes.Static => new StaticGenerator(constructionData.Filename),//automatically breaks on return
+                MazeGeneratorTypes.Additive => new RecursiveDivisionGenerator(constructionData.Width, constructionData.Height),
+                _ => throw new NotImplementedException(),
+            };
         }
     }
 }

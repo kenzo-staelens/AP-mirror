@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using Globals;
 using Generators;
 using Components;
+using ExtensionMethods;
 
 namespace WPF_maze_generator {
     /// <summary>
@@ -29,24 +30,39 @@ namespace WPF_maze_generator {
             Generate(null, null);
         }
 
-        public void Generate(object sender, RoutedEventArgs e) {
-            try {
-                MazeGeneratorFactory factory = new MazeGeneratorFactory();
-                MazeConstructionComponent constuctionData = new MazeConstructionComponent(Int32.Parse(WidthTextBox.Text),
-                    Int32.Parse(HeightTextBox.Text), $"./{FilenameTextBox.Text}");
-                IMazeGenerator gen = factory.Create((MazeGeneratorTypes)Generator.SelectedItem, constuctionData);
-                Maze maze = gen.Generate();
-                Render(maze);
-            }catch(Exception ex) {
-                ErrorLabel.Content = ex.ToString();
-                ErrorLabel.Visibility = System.Windows.Visibility.Visible;
+        public void GeneratorChanged(object sender, RoutedEventArgs e) {
+            if ((MazeGeneratorTypes)Generator.SelectedItem != MazeGeneratorTypes.Static) {
+                WidthTextBox.IsEnabled = true;
+                HeightTextBox.IsEnabled = true;
+                FilenameTextBox.IsEnabled = false;
+            }
+            else {
+                WidthTextBox.IsEnabled = false;
+                HeightTextBox.IsEnabled = false;
+                FilenameTextBox.IsEnabled = true;
             }
         }
 
-        public Line buildLine(int x1, int x2, int y1, int y2, int thickness) {
-            Line line = new Line();
-            SolidColorBrush brush = new SolidColorBrush();
-            brush.Color = Color.FromRgb(0, 0, 0);
+        public void Generate(object? sender, RoutedEventArgs? e) {
+            try {
+                MazeGeneratorFactory factory = new();
+                MazeConstructionComponent constuctionData = new(Int32.Parse(WidthTextBox.Text),
+                    Int32.Parse(HeightTextBox.Text), $"./{FilenameTextBox.Text}");
+                IMazeGenerator gen = factory.Create((MazeGeneratorTypes)Generator.SelectedItem, constuctionData);
+                Maze maze = gen.Generate();
+                DrawableCanvas.Children.Clear();
+                Render(maze);
+            }catch(Exception ex) {
+                ErrorLabel.Content = ex.ToString();
+                ErrorLabel.Visibility = Visibility.Visible;
+            }
+        }
+
+        private static Line BuildLine(int x1, int x2, int y1, int y2, int thickness) {
+            Line line = new();
+            SolidColorBrush brush = new() {
+                Color = Color.FromRgb(0, 0, 0)
+            };
             line.Stroke = brush;
             line.X1 = x1;
             line.X2 = x2;
@@ -68,25 +84,23 @@ namespace WPF_maze_generator {
             // pixels / #cells
             int line_length_width = (int)(DrawableCanvas.Width / maze.Width);
             int line_length_height = (int)(DrawableCanvas.Height / maze.Height);
-            SolidColorBrush brush = new SolidColorBrush();
-            brush.Color = Color.FromRgb(0, 0, 0);
             for (int i = 0; i < maze.Width; i++) {
                 for(int j = 0; j < maze.Height; j++) {
-                    Cell cell = maze.maze[j, i];
+                    Cell cell = maze.maze[i, j];
                     WallDataComponent? wdc = (WallDataComponent?)cell.GetComponent(typeof(WallDataComponent));
                     if (wdc == null) continue;//cannot render
                     //horizontal lines
-                    Line line = buildLine(line_length_width * i, line_length_width * (i + 1),
+                    Line line = BuildLine(line_length_width * i, line_length_width * (i + 1),
                         line_length_height * j, line_length_height * j,
                         ((WallDataComponent)wdc).Width);
-                    Line line2 = buildLine(line_length_width * i, line_length_width * (i + 1),
+                    Line line2 = BuildLine(line_length_width * i, line_length_width * (i + 1),
                         line_length_height * (j + 1), line_length_height * (j + 1),
                         ((WallDataComponent)wdc).Width);
                     //vertical lines
-                    Line line3 = buildLine(line_length_width * i, line_length_width * i,
+                    Line line3 = BuildLine(line_length_width * i, line_length_width * i,
                         line_length_height * j, line_length_height * (j + 1),
                         ((WallDataComponent)wdc).Width);
-                    Line line4 = buildLine(line_length_width * (i+1), line_length_width * (i + 1),
+                    Line line4 = BuildLine(line_length_width * (i+1), line_length_width * (i + 1),
                         line_length_height * j, line_length_height * (j + 1),
                         ((WallDataComponent)wdc).Width);
 

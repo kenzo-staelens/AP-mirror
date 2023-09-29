@@ -8,15 +8,16 @@
         Title="MainWindow" Height="650" Width="820">
     <Grid>
         <Label Content="Generator: " HorizontalAlignment="Left" Margin="600,30,0,0" VerticalAlignment="Top" Width="80"/>
-        <ComboBox Name="Generator" HorizontalAlignment="Left" Margin="680,30,0,0" VerticalAlignment="Top" Width="100"/>
+        <ComboBox Name="Generator" HorizontalAlignment="Left" Margin="680,30,0,0" VerticalAlignment="Top" Width="100"
+                  SelectionChanged="GeneratorChanged"/>
         
         <Label Content="Width: " HorizontalAlignment="Left" Margin="600,60,0,0" VerticalAlignment="Top" Width="80"/>
-        <TextBox Name ="WidthTextBox" Text="11" TextAlignment="Right" HorizontalAlignment="Left" Margin="700,60,0,0"
+        <TextBox Name ="WidthTextBox" Text="11" HorizontalAlignment="Left" Margin="700,60,0,0"
                  VerticalAlignment="Top" Width="80" IsEnabled="False" ToolTipService.ShowDuration="2000"
                  ToolTipService.BetweenShowDelay="10000" ToolTip="Breedte van het doolhof (enkel bruikbaar bij niet statische generators)"/>
         
         <Label Content="Height: " HorizontalAlignment="Left" Margin="600,90,0,0" VerticalAlignment="Top" Width="80"/>
-        <TextBox Name ="HeightTextBox" Text="11" TextAlignment="Right" HorizontalAlignment="Left" Margin="700,90,0,0"
+        <TextBox Name ="HeightTextBox" Text="11" HorizontalAlignment="Left" Margin="700,90,0,0"
                  VerticalAlignment="Top" Width="80" IsEnabled="False" ToolTipService.ShowDuration="2000"
                  ToolTipService.BetweenShowDelay="10000" ToolTip="Hoogte van het doolhof (enkel bruikbaar bij niet statische generators)"/>
         
