@@ -23,11 +23,14 @@ namespace WPF_maze_generator {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        private readonly MazeGeneratorFactory factory;
         public MainWindow() {
             InitializeComponent();
             Generator.ItemsSource = Enum.GetValues(typeof(MazeGeneratorTypes));
             Generator.SelectedIndex = 0;
+            this.factory = new(new IComponent[] { new WallDataComponent(2) });
             Generate(null, null);
+            
         }
 
         public void GeneratorChanged(object sender, RoutedEventArgs e) {
@@ -45,14 +48,14 @@ namespace WPF_maze_generator {
 
         public void Generate(object? sender, RoutedEventArgs? e) {
             try {
-                MazeGeneratorFactory factory = new();
                 MazeConstructionComponent constuctionData = new(Int32.Parse(WidthTextBox.Text),
                     Int32.Parse(HeightTextBox.Text), $"./{FilenameTextBox.Text}");
                 IMazeGenerator gen = factory.Create((MazeGeneratorTypes)Generator.SelectedItem, constuctionData);
                 Maze maze = gen.Generate();
                 DrawableCanvas.Children.Clear();
                 Render(maze);
-            }catch(Exception ex) {
+            }
+            catch(Exception ex) {
                 ErrorLabel.Content = ex.ToString();
                 ErrorLabel.Visibility = Visibility.Visible;
             }
@@ -104,10 +107,10 @@ namespace WPF_maze_generator {
                         line_length_height * j, line_length_height * (j + 1),
                         ((WallDataComponent)wdc).Width);
 
-                    if (cell.walls[0]) DrawableCanvas.Children.Add(line);
-                    if (cell.walls[2]) DrawableCanvas.Children.Add(line2);
-                    if (cell.walls[3]) DrawableCanvas.Children.Add(line3);
-                    if (cell.walls[1]) DrawableCanvas.Children.Add(line4);
+                    if (cell.Walls[0]) DrawableCanvas.Children.Add(line);
+                    if (cell.Walls[2]) DrawableCanvas.Children.Add(line2);
+                    if (cell.Walls[3]) DrawableCanvas.Children.Add(line3);
+                    if (cell.Walls[1]) DrawableCanvas.Children.Add(line4);
                 }
             }
         }

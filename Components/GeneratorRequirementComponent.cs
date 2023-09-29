@@ -11,6 +11,12 @@ namespace Components {
             get { return _generatorData.GetValueOrDefault(key,null); }
             set { _generatorData[key]=value; }
         }
+        public GeneratorRequirementComponent() {
+            _generatorData = new();
+        }
 
+        public IComponent Clone() {
+            return new GeneratorRequirementComponent();
+        }
     }
 }

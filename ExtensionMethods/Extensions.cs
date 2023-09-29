@@ -32,20 +32,20 @@ namespace ExtensionMethods {
             int height = maze.maze.GetLength(1);
             
             for (int i = 0; i < width; i++) {
-                if (maze.maze[i, 0].walls[0]) str+=".-";
+                if (maze.maze[i, 0].Walls[0]) str+=".-";
                 else str+=". ";
             }
             str+=".\n";
             for (int i = 0; i < height; i++) {
-                if (maze.maze[0, i].walls[3]) str+="| ";
+                if (maze.maze[0, i].Walls[3]) str+="| ";
                 else str+="  ";
                 for (int j = 0; j < width; j++) {
-                    if (maze.maze[j, i].walls[1]) { str += "| "; }
+                    if (maze.maze[j, i].Walls[1]) { str += "| "; }
                     else { str += "  "; }
                 }
                 str += "\n";
                 for (int j=0; j < width;j++) {
-                    if (maze.maze[j, i].walls[2]) { str += ".-"; }
+                    if (maze.maze[j, i].Walls[2]) { str += ".-"; }
                     else { str += ". "; }
                 }
                 str+=".\n";
@@ -62,6 +62,12 @@ namespace ExtensionMethods {
                 printable += "\n";
             }
             return printable;
+        }
+
+        public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) {
+            foreach (T element in source) {
+                action(element);
+            }
         }
     }
 

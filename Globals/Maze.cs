@@ -13,15 +13,15 @@ namespace Globals {
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        public Maze(int width, int height) : this(width, height, true) { }
-        public Maze(int width, int height, bool isDefaultSet) {
+        public Maze(int width, int height) : this(width, height, true, new IComponent[0]) { }
+        public Maze(int width, int height, bool isDefaultSet) : this(width, height, isDefaultSet, new IComponent[0]) { }
+        public Maze(int width, int height, bool isDefaultSet, IComponent[] extraComponents) {
             this.Width = width;
             this.Height = height;
             this.maze = new Cell[width, height];
             for(int i = 0; i < width; i++) {
                 for(int j = 0; j < height; j++) {
-                    var components = new IComponent[] { new WallDataComponent(2) };
-                    maze[i, j] = new Cell(i, j, isDefaultSet, components);
+                    maze[i, j] = new Cell(i, j, isDefaultSet, extraComponents);
                 }
             }
             for (int i = 0; i < width; i++) {

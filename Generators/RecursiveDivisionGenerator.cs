@@ -1,4 +1,5 @@
-﻿using Globals;
+﻿using Components;
+using Globals;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,13 @@ namespace Generators {
     internal class RecursiveDivisionGenerator : IMazeGenerator {
         private readonly int width, height;
         private readonly Random random;
-        public RecursiveDivisionGenerator(int width, int height) {
+        private readonly IComponent[] extraComponents;
+        public RecursiveDivisionGenerator(int width, int height) : this(width, height, new IComponent[0]) { }
+        public RecursiveDivisionGenerator(int width, int height, IComponent[] extraComponents) {
             this.width = width;
             this.height = height;
-            this.random = new Random();
+            this.random = new();
+            this.extraComponents = extraComponents;
         }
 
         /// <summary>
@@ -21,7 +25,7 @@ namespace Generators {
         /// <returns></returns>
         /// <see href="https://en.wikipedia.org/wiki/Maze_generation_algorithm"/>
         public Maze Generate() {
-            Maze maze = new(this.width, this.height, false);
+            Maze maze = new(this.width, this.height, false, this.extraComponents);
             Stack<int[]> stack = new();
             stack.Push(new int[] { 0, 0, maze.Width - 1, maze.Height - 1 });//top left corner indexes ; bottom right corner indexes
             while (stack.Count > 0) {

@@ -6,33 +6,34 @@ namespace Globals {
         public Cell[] Neighbours;
         public IComponent[] components;
 
-        private bool[] _walls;
-        public bool[] walls {
-            get { return _walls; }
+        public readonly bool[] Walls;
+
+        public Cell(int x, int y, bool isDefaultSet) : this(x, y, isDefaultSet, Array.Empty<Cell>(), Array.Empty<IComponent>()) {
+            
         }
 
-        public Cell(int x, int y, bool isDefaultSet){
+        public Cell(int x, int y, bool isDefaultSet, Cell[] neighbours) : this(x, y, isDefaultSet, neighbours, Array.Empty<IComponent>()) {
+            this.Neighbours = neighbours;
+        }
+
+        public Cell(int x, int y, bool isDefaultSet, IComponent[] components) : this(x, y, isDefaultSet, Array.Empty<Cell>(), components) {
+            this.components = new IComponent[components.Length];
+            for (int i = 0; i < components.Length; i++) {
+                this.components[i] = components[i].Clone();
+            }
+        }
+
+        public Cell(int x, int y, bool isDefaultSet, Cell[] neighbours, IComponent[] components){
+            this.Neighbours = neighbours;
+            this.components = components;
             this.x = x;
             this.y = y;
-            this._walls = new bool[]{ isDefaultSet, isDefaultSet, isDefaultSet, isDefaultSet}; // top, right, bottom, left
-        }
-
-        public Cell(int x, int y, bool isDefaultSet, Cell[] neighbours) : this(x, y, isDefaultSet) {
-            this.Neighbours = neighbours;
-        }
-
-        public Cell(int x, int y, bool isDefaultSet, IComponent[] components) : this(x,y,isDefaultSet){
-            this.components = components;
-        }
-
-        public Cell(int x, int y, bool isDefaultSet, Cell[] neighbours, IComponent[] components) : this(x, y, isDefaultSet){
-            this.Neighbours = neighbours;
-            this.components = components;
+            this.Walls = new bool[] { isDefaultSet, isDefaultSet, isDefaultSet, isDefaultSet }; // top, right, bottom, left
         }
 
         public void SetWall(int index, bool isSet) { this.SetWall(index, isSet, true); }
         public void SetWall(int index, bool isSet, bool cascades) {
-            this.walls[index] = isSet;
+            this.Walls[index] = isSet;
             if(cascades && this.Neighbours != null && this.Neighbours[index]!=null){
                 //copy set to neighbouring cell if exists
                 this.Neighbours[index].SetWall((index + 2) % 4, isSet, false);
