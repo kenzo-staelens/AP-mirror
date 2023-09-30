@@ -1,18 +1,21 @@
-﻿using Globals;
-using Components;
+﻿using Components;
+using Globals;
+using Datalaag;
 
 namespace Generators {
     public class MazeGeneratorFactory : IMazeGeneratorFactory {
 
         private readonly IComponent[] CellComponents;
-        public MazeGeneratorFactory() : this(new IComponent[0]){}
+        public MazeGeneratorFactory() : this(new IComponent[0]) { }
 
         public MazeGeneratorFactory(IComponent[] CellComponents) {
             this.CellComponents = CellComponents;
         }
         public IMazeGenerator Create(MazeGeneratorTypes type, MazeConstructionComponent constructionData) {
-            switch(type) {
+            switch (type) {
                 case MazeGeneratorTypes.Static:
+                    //var filename = constructionData.Filename;
+                    //FileManager.Load(filename);
                     return new StaticGenerator(constructionData.Filename, this.CellComponents);//automatically breaks on return
                 case MazeGeneratorTypes.Additive:
                     return new RecursiveDivisionGenerator(constructionData.Width, constructionData.Height, this.CellComponents);

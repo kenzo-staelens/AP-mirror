@@ -1,5 +1,5 @@
-﻿using Globals;
-using Components;
+﻿using Components;
+using Globals;
 
 namespace Generators {
     internal interface IMazeGeneratorFactory {

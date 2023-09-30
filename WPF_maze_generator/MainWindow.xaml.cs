@@ -1,21 +1,11 @@
-﻿using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Components;
+using Generators;
+using Globals;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Globals;
-using Generators;
-using Components;
 using ExtensionMethods;
 
 namespace WPF_maze_generator {
@@ -28,9 +18,15 @@ namespace WPF_maze_generator {
             InitializeComponent();
             Generator.ItemsSource = Enum.GetValues(typeof(MazeGeneratorTypes));
             Generator.SelectedIndex = 0;
-            this.factory = new(new IComponent[] { new WallDataComponent(2) });
-            Generate(null, null);
-            
+            try {
+                this.factory = new(new IComponent[] { new WallDataComponent(2) });
+                Generate(null, null);
+            }
+            catch (Exception ex) {
+                ErrorLabel.Content = ex.ToString();
+                ErrorLabel.Visibility = Visibility.Visible;
+            }
+
         }
 
         public void GeneratorChanged(object sender, RoutedEventArgs e) {
@@ -46,16 +42,40 @@ namespace WPF_maze_generator {
             }
         }
 
+        //source: https://stackoverflow.com/questions/10315188/open-file-dialog-and-select-a-file-using-wpf-controls-and-c-sharp
+        private void OpenFile(object sender, RoutedEventArgs e) {
+            try {
+                // Create OpenFileDialog 
+                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+                dlg.DefaultExt = ".txt";
+                dlg.Filter = "Text Files (*.txt) |*.txt";
+                Nullable<bool> result = dlg.ShowDialog();
+                if (result == true) {
+                    // Open document 
+                    string filename = dlg.FileName;
+                    FilenameTextBox.Text = filename;
+                }
+            }
+            catch(Exception ex) {
+                ErrorLabel.Content = ex.ToString();
+                ErrorLabel.Visibility = Visibility.Visible;
+            }
+        }
+
         public void Generate(object? sender, RoutedEventArgs? e) {
             try {
                 MazeConstructionComponent constuctionData = new(Int32.Parse(WidthTextBox.Text),
-                    Int32.Parse(HeightTextBox.Text), $"./{FilenameTextBox.Text}");
+                    Int32.Parse(HeightTextBox.Text), FilenameTextBox.Text);
                 IMazeGenerator gen = factory.Create((MazeGeneratorTypes)Generator.SelectedItem, constuctionData);
                 Maze maze = gen.Generate();
                 DrawableCanvas.Children.Clear();
-                Render(maze);
+                ErrorLabel.Visibility = Visibility.Hidden;
+                int width = (int)(DrawableCanvas.Width / maze.Width)/2;
+                int height = (int)(DrawableCanvas.Height / maze.Height)/2;
+                Ball ball = new(width, height, Math.Min(width, height) - 2);
+                Render(maze, ball);
             }
-            catch(Exception ex) {
+            catch (Exception ex) {
                 ErrorLabel.Content = ex.ToString();
                 ErrorLabel.Visibility = Visibility.Visible;
             }
@@ -83,12 +103,32 @@ namespace WPF_maze_generator {
             return line;
         }
 
+        public void Render(Maze maze, Ball ball) {
+            Render(maze);
+            SolidColorBrush brush = new() { Color = Color.FromRgb(255, 0, 0) };
+            Ellipse point = new() {
+                Width = ball.Size,
+                Height = ball.Size,
+                StrokeThickness = 1,
+                Fill = brush,
+                Stroke = brush,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                RenderTransform = new TranslateTransform() {
+                    X = ball.X - ball.Size/2, //align center werkt niet bij rendertransform
+                    Y = ball.Y - ball.Size/2,
+                }
+            };
+            DrawableCanvas.Children.Add(point);
+
+        }
+
         public void Render(Maze maze) {
             // pixels / #cells
             int line_length_width = (int)(DrawableCanvas.Width / maze.Width);
             int line_length_height = (int)(DrawableCanvas.Height / maze.Height);
             for (int i = 0; i < maze.Width; i++) {
-                for(int j = 0; j < maze.Height; j++) {
+                for (int j = 0; j < maze.Height; j++) {
                     Cell cell = maze.maze[i, j];
                     WallDataComponent? wdc = (WallDataComponent?)cell.GetComponent(typeof(WallDataComponent));
                     if (wdc == null) continue;//cannot render
@@ -103,7 +143,7 @@ namespace WPF_maze_generator {
                     Line line3 = BuildLine(line_length_width * i, line_length_width * i,
                         line_length_height * j, line_length_height * (j + 1),
                         ((WallDataComponent)wdc).Width);
-                    Line line4 = BuildLine(line_length_width * (i+1), line_length_width * (i + 1),
+                    Line line4 = BuildLine(line_length_width * (i + 1), line_length_width * (i + 1),
                         line_length_height * j, line_length_height * (j + 1),
                         ((WallDataComponent)wdc).Width);
 

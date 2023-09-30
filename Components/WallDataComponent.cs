@@ -8,7 +8,7 @@
             this.Width = width;
         }
 
-        public IComponent Clone() { 
+        public IComponent Clone() {
             return new WallDataComponent(Width);
         }
     }

@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Globals;
+﻿using Globals;
 
 namespace ExtensionMethods {
     public static class Extensions {
@@ -13,7 +12,7 @@ namespace ExtensionMethods {
             count = 0;
             foreach (T item in array) {
                 if (item != null) {
-                    new_array[count]= item;
+                    new_array[count] = item;
                     count++;
                 }
             }
@@ -22,7 +21,7 @@ namespace ExtensionMethods {
 
         public static String Multiply(this String str, int count) {
             String s = "";
-            for(int i=0;i<count;i++) { s += str; }
+            for (int i = 0; i < count; i++) { s += str; }
             return s;
         }
 
@@ -30,31 +29,31 @@ namespace ExtensionMethods {
             String str = "";
             int width = maze.maze.GetLength(0);
             int height = maze.maze.GetLength(1);
-            
+
             for (int i = 0; i < width; i++) {
-                if (maze.maze[i, 0].Walls[0]) str+=".-";
-                else str+=". ";
+                if (maze.maze[i, 0].Walls[0]) str += ".-";
+                else str += ". ";
             }
-            str+=".\n";
+            str += ".\n";
             for (int i = 0; i < height; i++) {
-                if (maze.maze[0, i].Walls[3]) str+="| ";
-                else str+="  ";
+                if (maze.maze[0, i].Walls[3]) str += "| ";
+                else str += "  ";
                 for (int j = 0; j < width; j++) {
                     if (maze.maze[j, i].Walls[1]) { str += "| "; }
                     else { str += "  "; }
                 }
                 str += "\n";
-                for (int j=0; j < width;j++) {
+                for (int j = 0; j < width; j++) {
                     if (maze.maze[j, i].Walls[2]) { str += ".-"; }
                     else { str += ". "; }
                 }
-                str+=".\n";
+                str += ".\n";
             }
             return str;
         }
 
         public static String ToPrintable<T>(this T[,] matrix) {
-            String printable="";
+            String printable = "";
             for (int i = 0; i < matrix.GetLength(0); i++) {
                 for (int j = 0; j < matrix.GetLength(1); j++) {
                     printable += matrix[i, j] + "\t";

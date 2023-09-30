@@ -1,17 +1,12 @@
 ﻿using Components;
 using Globals;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Generators {
     internal class RecursiveDivisionGenerator : IMazeGenerator {
         private readonly int width, height;
         private readonly Random random;
         private readonly IComponent[] extraComponents;
-        public RecursiveDivisionGenerator(int width, int height) : this(width, height, new IComponent[0]) { }
+        public RecursiveDivisionGenerator(int width, int height) : this(width, height, Array.Empty<IComponent>()) { }
         public RecursiveDivisionGenerator(int width, int height, IComponent[] extraComponents) {
             this.width = width;
             this.height = height;
@@ -33,13 +28,13 @@ namespace Generators {
                 if (item == null) continue;
                 int itemWidth = item[2] - item[0] + 1;
                 int itemHeight = item[3] - item[1] + 1;
-                //if ((itemWidth * itemHeight < 6) && !(itemWidth == 2 && itemWidth == 2)) continue;
-                if (itemWidth * itemHeight < 6) { //super weird bug with true && true = false???
-                    //don't divide smaller than 6 -> don't generate cells smaller than 3 except for 2*2
-                    if (!(itemWidth == 2 && itemHeight == 2)) {
-                        continue;
-                    }
-                }
+                if ((itemWidth * itemHeight < 6) && !(itemWidth == 2 && itemHeight == 2)) continue;
+                //if (itemWidth * itemHeight < 6) { //super weird bug with true && true = false???
+                //    //don't divide smaller than 6 -> don't generate cells smaller than 3 except for 2*2
+                //    if (!(itemWidth == 2 && itemHeight == 2)) {
+                //        continue;
+                //    }
+                //}
                 if (itemWidth == 1 || itemHeight == 1) continue; //optimization step
                 BuildDivision(item, itemWidth, itemHeight, stack, maze);
             }

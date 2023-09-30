@@ -1,7 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-using System.IO;
-
-namespace Datalaag {
+﻿namespace Datalaag {
     public class FileManager {
 
         public static string Load(string filename) {

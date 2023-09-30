@@ -1,7 +1,7 @@
-﻿using ExtensionMethods;
-using Globals;
+﻿using Components;
+using ExtensionMethods;
 using Generators;
-using Components;
+using Globals;
 
 namespace Console_Test_Environment {
     internal class Program {

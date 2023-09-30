@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Components;
 using Globals;
-using Components;
-using ExtensionMethods;
 
 namespace Generators {
     internal class RecursiveBackgrackingGenerator : IMazeGenerator {
@@ -25,7 +19,7 @@ namespace Generators {
             Maze maze = new(this.width, this.height, true, this.extraComponents);
             Stack<Cell> stack = new();
             Cell randomCell = maze.maze.OfType<Cell>().Skip(random.Next(maze.maze.Length)).First();
-            randomCell = maze.maze[0, 0];
+            //Cell randomCell = maze.maze[0, 0];
             GeneratorRequirementComponent? cellDataStore = (GeneratorRequirementComponent?)randomCell.GetComponent(typeof(GeneratorRequirementComponent));
             if (cellDataStore != null) ((GeneratorRequirementComponent)cellDataStore)["visited"] = true;
             stack.Push(randomCell);
@@ -35,8 +29,8 @@ namespace Generators {
                 randomCell = stack.Peek();//last item on stack
                 var randomCellValidNeighbours = randomCell.Neighbours.Where(x => x != null)
                     .Where(x => ((GeneratorRequirementComponent?)x.GetComponent(typeof(GeneratorRequirementComponent))) != null)
-                    .Where(x=> (bool?)((GeneratorRequirementComponent)x.GetComponent(typeof(GeneratorRequirementComponent)))["visited"]==null ||
-                    (bool) ((GeneratorRequirementComponent)x.GetComponent(typeof(GeneratorRequirementComponent)))["visited"] == false);
+                    .Where(x => (bool?)((GeneratorRequirementComponent)x.GetComponent(typeof(GeneratorRequirementComponent)))["visited"] == null ||
+                    (bool)((GeneratorRequirementComponent)x.GetComponent(typeof(GeneratorRequirementComponent)))["visited"] == false);
 #pragma warning restore CS8605 // Unboxing a possibly null value.
                 if (randomCellValidNeighbours.Any()) {//if such neighbour exists, select a random neighbour and set as visited
                     var memory = randomCell;

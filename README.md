@@ -1,92 +1,162 @@
-# 2324 AP KenzoStaelens
+# WPF Maze generator
 
+## projectstructuur
+- Components
+	- bevatten data stores die aan datastructuren kunnen worden meegegeven via de constructor enkel als deze nodig zijn
+	- IComponent (base interface)
+	- MazeConstructionComponent (bevat data nuttig voor generators)
+	- WallDataComponent (nuttig voor physics en rendering)
+	- GeneratorRequirementComponent (bevat extra datastore dat generators dynamisch kunnen aanvullen in de vorm van een dictionary)
+- Datalaag
+	- klassen en interfaces voor interactie met externe data
+	- FileManager (uitlezen van bestanden)
+- ExtensionMethods & UtilityFunctions
+	- self explanatory 
+- [Generators](Generators)
+	- interfaces & klassen voor maze generators en maze generator factory
+	- IMazeGenerator
+	- IMazeGeneratorFactory
+	- MazeGeneratorFactory
+	- StaticGenerator
+	- RecursiveBacktrackingGenerator
+	- RecursiveDivisionGenerator
+- [Globals](Datastructuren)
+	- bevat datastructuren (kan dus ook Models genoemd worden)
+	- Maze
+	- Cell
+	- Ball
+	- enum MazeGeneratorTypes (gebruikt in factory)
+- Runnable Projecten
+	- Console_Test_Environment
+	- WPF_maze_generator
+	- WPF_physics_simulator (leeg)
 
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
+## Datastructuren
+maze is een simpele collectie van cellen. Voor interne cellen wordt verder ook hun buren aangevuld (zie hieronder `Cell`)
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/ikdoeict/kenzo.staelens/2324-AP-KenzoStaelens.git
-git branch -M main
-git push -uf origin main
+Maze
+	- readonly int Width, Height
+	- readonly Cell[,] cells
 ```
 
-## Integrate with your tools
+Cell bevat velden voor Neighbours voor gebruik bij het aanpassen van muren.
+Zo kan als bij een cel de rechtermuur wordt aangepast in de rechtercel meteen de linkermuur aangepast worden(zie verder [muren updaten](#muren-updaten));  
+Bovendien is het ook sneller om een graph te maken omdat vanuit cell een referentie is naar de gevraagde naburige cel. \
+cellen kunnen optioneel ook andere componenten bevatten die gebruikt worden door andere systemen (rendering, physics, genereren, etc.);
+Deze worden via de constructor megegeven
+```
+Cell
+	- readonly int X,Y /*index of cell*/
+	- Cell[4] Neighbours
+	- readonly bool[4] walls
+	- private readonly IComponent[]
+	- public IComponent? GetComponent(Type<IComponent> ComponentType)
+```
 
-- [ ] [Set up project integrations](https://gitlab.com/ikdoeict/kenzo.staelens/2324-AP-KenzoStaelens/-/settings/integrations)
+voor later gebruik horen X, Y aanpasbaar te zijn, grootte van de bal mag wel constant blijven
+```
+Ball
+	- int X, Y
+	- readonly int Size
+	- private readonly IComponent[]
+	- public IComponent? GetComponent(Type<IComponent> ComponentType)
+```
 
-## Collaborate with your team
+### muren updaten
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+in cellen zit een methode `SetWall(int index, bool isSet, optional bool cascade=true)`  
+met deze methode kan de cel zijn muren aanpassen met `walls[index] = isSet`;
+Moest cascade `true` zijn zal ook de cel aan de overkant van de muur(`Neighbours[(index+2)%4]`) aangepast worden maar zal verder geen cascade meer gebeuren.
 
-## Test and Deploy
+## Generators
 
-Use the built-in continuous integration in GitLab.
+### StaticGenerator
+de statische generator maakt gebruik van een string representatie van muren per cell met volgende structuur  
+(1: muur bestaat; 0: muur bestaat niet)
+```
+maze_breedte maze_hoogte  
+muur_boven muur_rechts muur_onder muur_links   
+...  
+```
+waarbij bestaande muren niet bestaande muren overschrijven; muren worden van links naar rechts ingevuld;
+er mogen meer muren gedefinieerd zijn dan de gegeven grootte (`breedte*hoogte`) maar deze worden genegeerd
+zo is bijvoorbeeld de configuratie
+```
+2 2
+1 0 0 1
+1 1 0 0
+1 0 1 1
+0 1 1 _
+```
+de definitie voor volgend doolhof ( _ mag beiden 0 of 1 bevatten)
+```
+.--.--.
+|     |
+.  .  .
+|  |  |
+.--.--.
+```
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+#### Technische keuzes
+- er werdt gekozen om lege muren niet te plaatsen zodat dit een additief algoritme wordt;
+  Zo zijn de verwachtingen van string data ook iets laxer in geval de gebruiker een fout maakt in die data.
 
-***
 
-# Editing this README
+### Recursive Backtracking Generator
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+#### Algoritme
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- kies een willekeurige cel
+- markeer de cel als bezocht, dit is je startpunt
+- zolang je niet bezochte cellen bestaan
+  - kies een niet bezochte buur
+  - maak een gang tussen de huidige cel en die buur
+  - markeer de buur als bezocht
+  - de huidige cel wordt de net gekozen buur
+  - als geen buren bestaan keer terug naar de vorige cel
+- wanneer geen onbezochte cellen bestaan is het doolhof gemaakt
 
-## Name
-Choose a self-explaining name for your project.
+#### Technische keuzes
+- Er is gebruik gemaakt van een `Stack<Cell>` in plaats van recursie om geen (of in ieder geval een veel hoger)
+ limiet van celdiepte te hebben aangezien dit algoritme vrij diepe recursie kan genereren (worst case = O(n*m))
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+- Er wordt gebruik gemaakt van de GeneratorRequirementComponent als data store om bij te houden of de cel al bezocht geweest is
+  er is voor deze manier gekozen omdat niet elke generator dit in een cel moet markeren en een cel dus geen veld voorziet om deze data bij te houden
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+- Voor het kiezen van een geldige buur wordt van linq gebruik gemaakt vanwege deze implementatie moet bij het aanpassen van muren eerst bij
+  de huidige cel de index van de buur gezocht worden om de index van de muur te bepalen; Door het cascade mechanisme van setWall moet die functie enkel op de huidige cel toegepast worden
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+### Recursive Division Generator
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+#### Algoritme
+- selecteer de eerste sectie als het volledige doolhof
+- zolang deelbare secties bestaan (minumum 6 cellen groot of met vorm 2x2)
+  - deel de zone horizontaal of verticaal
+  - plaats een muur langs de volledige deellijn
+  - maak een gat ergens in de net gebouwde deellijn
+  - herhaal voor elk van de nieuwe gegenereerde (kleinere) secties
+- optioneel: bouw buitenmuren
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+#### Technische keuzes
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+- net zoals de vorige generator is hier ook van een Stack gebruik gemaakt;
+  In dit geval is het echter `Stack<int[4]>` waar elke `int[4]` de index en van de linkerbovenhoek en rechteronderhoek van een sectie bijhoudt.
+- secties van 2x2 worden alsnog verwerkt omdat anders een cirkel ontstaat (ga steeds links of rechts in dit vierkant)
+- secties met breedte of hoogte 1 worden overgeslaan aangezien 1 van de richtingen niet deelbaar is en in de andere de geplaatste muur toch weer meteen wordt weggehaald,
+  dit is dus een nuloperatie en vraagt vervolgens meer resources dan nodig zijn (de gedeelde secties worden anders ook aan de stack toegevoegd en creëren dan nog meer nuloperaties)
+- er werdt gekozen voor secties met minimum 6 cellen omdat een sectie met 5 (of minder; uitzondering bij 2x2) cellen enkel kan delen in (2x1; 3x1) secties
+  waarbij 2x1 een te kleine sectie is om toe te laten
+- in plaats van 50/50 willekeurig te kiezen voor de richting van delen wordt `bool horizontaal = RandomDouble()>itemWidth / (itemHeight + itemWidth`
+  gebruikt, bij 50/50 lijkt namelijk een bias te zijn voor lange smalle gangen, met deze formule wordt de bias naar eerder vierkantige secties geduwd
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+## Grafische Applicatie
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+in de grafische applicatie zijn velden voorzien voor
+- het selecteren van generator
+- breedte en hoogte van het doolhof (default 11) (enkel non static generator)
+- het selecteren van een tekstbestand (default = "./default.txt") (enkel static generator)
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+Er is ook een Canvas(550x550) aanwezig waar het doolhof op gerenderd wordt,
+de grootte van de getekende cellen wordt dynamisch aangepast aan de grootte van het doolhof `breedte/#cellen`
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Als errors gegenereerd worden komen die onder de "Generate" knop
