@@ -12,13 +12,9 @@ namespace Globals {
 
         }
 
-        public Cell(int x, int y, bool isDefaultSet, Cell[] neighbours) : this(x, y, isDefaultSet, neighbours, Array.Empty<IComponent>()) {
-            //this.Neighbours = neighbours;
-        }
+        public Cell(int x, int y, bool isDefaultSet, Cell[] neighbours) : this(x, y, isDefaultSet, neighbours, Array.Empty<IComponent>()) {}
 
-        public Cell(int x, int y, bool isDefaultSet, IComponent[] components) : this(x, y, isDefaultSet, Array.Empty<Cell>(), components) {
-            
-        }
+        public Cell(int x, int y, bool isDefaultSet, IComponent[] components) : this(x, y, isDefaultSet, Array.Empty<Cell>(), components) {}
 
         public Cell(int x, int y, bool isDefaultSet, Cell[] neighbours, IComponent[] components) {
             this.Neighbours = neighbours;

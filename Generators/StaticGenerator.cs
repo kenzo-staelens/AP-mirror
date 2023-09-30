@@ -9,7 +9,7 @@ namespace Generators {
         private readonly IComponent[] extraComponents;
         public StaticGenerator(String mazeString) : this(mazeString, Array.Empty<IComponent>()) { }
         public StaticGenerator(String mazeString, IComponent[] extraComponents) {
-            this.mazeString = FileManager.Load(mazeString);
+            this.mazeString = mazeString;
             this.extraComponents = extraComponents;
         }
 

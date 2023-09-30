@@ -23,7 +23,8 @@ namespace WPF_maze_generator {
                 Generate(null, null);
             }
             catch (Exception ex) {
-                ErrorLabel.Content = ex.ToString();
+                this.factory = new(Array.Empty<IComponent>());
+                ErrorLabel.Content = ex.Message.ToString();
                 ErrorLabel.Visibility = Visibility.Visible;
             }
 
@@ -46,9 +47,10 @@ namespace WPF_maze_generator {
         private void OpenFile(object sender, RoutedEventArgs e) {
             try {
                 // Create OpenFileDialog 
-                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-                dlg.DefaultExt = ".txt";
-                dlg.Filter = "Text Files (*.txt) |*.txt";
+                Microsoft.Win32.OpenFileDialog dlg = new() {
+                    DefaultExt = ".txt",
+                    Filter = "Text Files (*.txt) |*.txt"
+                };
                 Nullable<bool> result = dlg.ShowDialog();
                 if (result == true) {
                     // Open document 
@@ -57,7 +59,7 @@ namespace WPF_maze_generator {
                 }
             }
             catch(Exception ex) {
-                ErrorLabel.Content = ex.ToString();
+                ErrorLabel.Content = ex.Message.ToString();
                 ErrorLabel.Visibility = Visibility.Visible;
             }
         }
@@ -76,7 +78,7 @@ namespace WPF_maze_generator {
                 Render(maze, ball);
             }
             catch (Exception ex) {
-                ErrorLabel.Content = ex.ToString();
+                ErrorLabel.Content = ex.Message.ToString();
                 ErrorLabel.Visibility = Visibility.Visible;
             }
         }
