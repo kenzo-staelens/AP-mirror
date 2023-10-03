@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using ExtensionMethods;
+using System.Threading.Tasks;
 
 namespace WPF_maze_generator {
     /// <summary>
@@ -35,11 +36,13 @@ namespace WPF_maze_generator {
                 WidthTextBox.IsEnabled = true;
                 HeightTextBox.IsEnabled = true;
                 FilenameTextBox.IsEnabled = false;
+                FileDialogButton.IsEnabled = false;
             }
             else {
                 WidthTextBox.IsEnabled = false;
                 HeightTextBox.IsEnabled = false;
                 FilenameTextBox.IsEnabled = true;
+                FileDialogButton.IsEnabled = true;
             }
         }
 
@@ -66,14 +69,17 @@ namespace WPF_maze_generator {
 
         public void Generate(object? sender, RoutedEventArgs? e) {
             try {
-                MazeConstructionComponent constuctionData = new(Int32.Parse(WidthTextBox.Text),
+                MazeConstructionComponent constructionData = new(Int32.Parse(WidthTextBox.Text),
                     Int32.Parse(HeightTextBox.Text), FilenameTextBox.Text);
-                IMazeGenerator gen = factory.Create((MazeGeneratorTypes)Generator.SelectedItem, constuctionData);
+                IMazeGenerator gen = factory.Create((MazeGeneratorTypes)Generator.SelectedItem, constructionData);
+                if ((MazeGeneratorTypes)Generator.SelectedItem != MazeGeneratorTypes.Static &&
+                    (constructionData.Width > 200 || constructionData.Height > 200)) throw new Exception("maximum grootte van doolhof is 200x200");
                 Maze maze = gen.Generate();
                 DrawableCanvas.Children.Clear();
                 ErrorLabel.Visibility = Visibility.Hidden;
-                int width = (int)(DrawableCanvas.Width / maze.Width)/2;
-                int height = (int)(DrawableCanvas.Height / maze.Height)/2;
+                int width = (int)(DrawableCanvas.Width / maze.Width) / 2;
+                int height = (int)(DrawableCanvas.Height / maze.Height) / 2;
+                width = Math.Min(width, height); height = Math.Min(width, height);
                 Ball ball = new(width, height, Math.Min(width, height) - 2);
                 Render(maze, ball);
             }
@@ -107,46 +113,50 @@ namespace WPF_maze_generator {
 
         public void Render(Maze maze, Ball ball) {
             Render(maze);
-            SolidColorBrush brush = new() { Color = Color.FromRgb(255, 0, 0) };
-            Ellipse point = new() {
-                Width = ball.Size,
-                Height = ball.Size,
-                StrokeThickness = 1,
-                Fill = brush,
-                Stroke = brush,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                RenderTransform = new TranslateTransform() {
-                    X = ball.X - ball.Size/2, //align center werkt niet bij rendertransform
-                    Y = ball.Y - ball.Size/2,
-                }
-            };
-            DrawableCanvas.Children.Add(point);
+            try {
+                SolidColorBrush brush = new() { Color = Color.FromRgb(255, 0, 0) };
+                Ellipse point = new() {
+                    Width = ball.Size,
+                    Height = ball.Size,
+                    StrokeThickness = 1,
+                    Fill = brush,
+                    Stroke = brush,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    RenderTransform = new TranslateTransform() {
+                        X = ball.X - ball.Size / 2, //align center werkt niet bij rendertransform
+                        Y = ball.Y - ball.Size / 2,
+                    }
+                };
+                DrawableCanvas.Children.Add(point);
+            }catch{ /*exception ignored for ball render*/}
 
         }
 
         public void Render(Maze maze) {
             // pixels / #cells
-            int line_length_width = (int)(DrawableCanvas.Width / maze.Width);
-            int line_length_height = (int)(DrawableCanvas.Height / maze.Height);
+            double line_length_width = (DrawableCanvas.Width / maze.Width);
+            double line_length_height = (DrawableCanvas.Height / maze.Height);
+            line_length_width= Math.Min(line_length_width, line_length_height);
+            line_length_height = Math.Min(line_length_width, line_length_height);
             for (int i = 0; i < maze.Width; i++) {
                 for (int j = 0; j < maze.Height; j++) {
                     Cell cell = maze.maze[i, j];
                     WallDataComponent? wdc = (WallDataComponent?)cell.GetComponent(typeof(WallDataComponent));
                     if (wdc == null) continue;//cannot render
                     //horizontal lines
-                    Line line = BuildLine(line_length_width * i, line_length_width * (i + 1),
-                        line_length_height * j, line_length_height * j,
+                    Line line = BuildLine((int)(line_length_width * i), (int)(line_length_width * (i + 1)),
+                        (int)(line_length_height * j), (int)(line_length_height * j),
                         ((WallDataComponent)wdc).Width);
-                    Line line2 = BuildLine(line_length_width * i, line_length_width * (i + 1),
-                        line_length_height * (j + 1), line_length_height * (j + 1),
+                    Line line2 = BuildLine((int)(line_length_width * i), (int)(line_length_width * (i + 1)),
+                        (int)(line_length_height * (j + 1)), (int)(line_length_height * (j + 1)),
                         ((WallDataComponent)wdc).Width);
                     //vertical lines
-                    Line line3 = BuildLine(line_length_width * i, line_length_width * i,
-                        line_length_height * j, line_length_height * (j + 1),
+                    Line line3 = BuildLine((int)(line_length_width * i), (int)(line_length_width * i),
+                        (int)(line_length_height * j), (int)(line_length_height * (j + 1)),
                         ((WallDataComponent)wdc).Width);
-                    Line line4 = BuildLine(line_length_width * (i + 1), line_length_width * (i + 1),
-                        line_length_height * j, line_length_height * (j + 1),
+                    Line line4 = BuildLine((int)(line_length_width * (i + 1)),(int)(line_length_width * (i + 1)),
+                        (int)(line_length_height * j), (int)(line_length_height * (j + 1)),
                         ((WallDataComponent)wdc).Width);
 
                     if (cell.Walls[0]) DrawableCanvas.Children.Add(line);

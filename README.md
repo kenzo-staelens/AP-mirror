@@ -156,7 +156,13 @@ in de grafische applicatie zijn velden voorzien voor
 - breedte en hoogte van het doolhof (default 11) (enkel non static generator)
 - het selecteren van een tekstbestand (default = "./default.txt") (enkel static generator)
 
-Er is ook een Canvas(550x550) aanwezig waar het doolhof op gerenderd wordt,
+Er is ook een Canvas(600x600) aanwezig waar het doolhof op gerenderd wordt,
 de grootte van de getekende cellen wordt dynamisch aangepast aan de grootte van het doolhof `breedte/#cellen`
 
 Als errors gegenereerd worden komen die onder de "Generate" knop
+
+Op het doolhof wordt ook een bal getoond die in een volgende stap (link volgt) zal dienen als "solver" van het doolhof; ook deze bal wordt dynamisch geschaald naar de grootte van het doolhof en zal half zo groot zijn als een cel.
+
+Een praktische grens op het genereren van doolhoven staat op maximaal 200x200 in grootte, hierna zou een groter doolhof toch niet meer duidelijk zichtbaar zijn.
+
+![maze image](screenshot1.png)

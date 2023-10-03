@@ -5,36 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_maze_generator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="820">
+        Title="MainWindow" Height="700" Width="970">
     <Grid>
-        <Label Content="Generator: " HorizontalAlignment="Left" Margin="600,30,0,0" VerticalAlignment="Top" Width="80"/>
-        <ComboBox Name="Generator" HorizontalAlignment="Left" Margin="680,30,0,0" VerticalAlignment="Top" Width="100"
+        <Label Content="Generator: " HorizontalAlignment="Left" Margin="750,30,0,0" VerticalAlignment="Top" Width="80"/>
+        <ComboBox Name="Generator" HorizontalAlignment="Left" Margin="830,30,0,0" VerticalAlignment="Top" Width="100"
                   SelectionChanged="GeneratorChanged"/>
         
-        <Label Content="Width: " HorizontalAlignment="Left" Margin="600,60,0,0" VerticalAlignment="Top" Width="80"/>
-        <TextBox Name ="WidthTextBox" Text="11" HorizontalAlignment="Left" Margin="700,60,0,0"
+        <Label Content="Width: " HorizontalAlignment="Left" Margin="750,60,0,0" VerticalAlignment="Top" Width="80"/>
+        <TextBox Name ="WidthTextBox" Text="11" HorizontalAlignment="Left" Margin="850,60,0,0"
                  VerticalAlignment="Top" Width="80" IsEnabled="False" ToolTipService.ShowDuration="2000"
                  ToolTipService.BetweenShowDelay="10000" ToolTip="Breedte van het doolhof (enkel bruikbaar bij niet statische generators)"/>
         
-        <Label Content="Height: " HorizontalAlignment="Left" Margin="600,90,0,0" VerticalAlignment="Top" Width="80"/>
-        <TextBox Name ="HeightTextBox" Text="11" HorizontalAlignment="Left" Margin="700,90,0,0"
+        <Label Content="Height: " HorizontalAlignment="Left" Margin="750,90,0,0" VerticalAlignment="Top" Width="80"/>
+        <TextBox Name ="HeightTextBox" Text="11" HorizontalAlignment="Left" Margin="850,90,0,0"
                  VerticalAlignment="Top" Width="80" IsEnabled="False" ToolTipService.ShowDuration="2000"
                  ToolTipService.BetweenShowDelay="10000" ToolTip="Hoogte van het doolhof (enkel bruikbaar bij niet statische generators)"/>
         
-        <Label Content="File: " HorizontalAlignment="Left" Margin="600,120,0,0" VerticalAlignment="Top" Width="80"/>
-        <TextBox Name ="FilenameTextBox" Text="./default.txt" HorizontalAlignment="Left" Margin="660,120,0,0" VerticalAlignment="Top"
+        <Label Content="File: " HorizontalAlignment="Left" Margin="750,120,0,0" VerticalAlignment="Top" Width="80"/>
+        <TextBox Name ="FilenameTextBox" Text="./default.txt" HorizontalAlignment="Left" Margin="810,120,0,0" VerticalAlignment="Top"
                  Width="80" ToolTipService.ShowDuration="2000" ToolTipService.BetweenShowDelay="10000" 
                  ToolTip="Bestandsnaam voor statische generatie."/>
-        <Button Content="O" Name="FileDialogButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="760,120,0,0" Width="20"
+        <Button Content="O" Name="FileDialogButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="910,120,0,0" Width="20"
                 Height="20" Click="OpenFile"/>
 
-        <Button Name="GenerateBtn" Content="Generate" Margin="600,150,0,0" Width="180" HorizontalAlignment="Left"
+        <Button Name="GenerateBtn" Content="Generate" Margin="750,150,0,0" Width="180" HorizontalAlignment="Left"
                 VerticalAlignment="Top" ToolTipService.ShowDuration="2000" ToolTipService.BetweenShowDelay="10000" 
                 ToolTip="Genereer doolhof met huidige configuratie." Click="Generate"/>
-        <Label Name="ErrorLabel" Content="Error: " HorizontalAlignment="Left" Margin="600,180,0,0"
-               VerticalAlignment="Top" Width="1800" Foreground="Red" Visibility="Hidden"/>
+        <Label Name="ErrorLabel" Content="Error: " HorizontalAlignment="Left" Margin="650,180,0,0"
+               VerticalAlignment="Top" Width="280" Foreground="Red" Visibility="Hidden"/>
 
-        <Canvas Name="DrawableCanvas" Width="550" Height="550" Margin="20,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#EEEEEE">
+        <Canvas Name="DrawableCanvas" Width="600" Height="600" Margin="20,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#EEEEEE">
         </Canvas>
 
     </Grid>
