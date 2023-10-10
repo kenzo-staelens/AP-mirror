@@ -62,7 +62,16 @@ namespace ExtensionMethods {
             }
             return printable;
         }
-
+        public static String ToStatic(this Maze maze){
+            Cell[,] cells = maze.maze;
+            String printable = $"{maze.Width} {maze.Height}\n";
+            for (int i = 0; i < cells.GetLength(0); i++) {
+                for (int j = 0; j < cells.GetLength(1); j++) {
+                    printable += $"{(cells[j,i].Walls[0]?'1':'0')} {(cells[j,i].Walls[1]?'1':'0')} {(cells[j,i].Walls[2]?'1':'0')} {(cells[j,i].Walls[3]?'1':'0')}\n";
+                }
+            }
+            return printable;
+        }
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) {
             foreach (T element in source) {
                 action(element);
