@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Globals {
-    public struct Rect {
+    public readonly struct Rect {
         public readonly int x1;
         public readonly int x2;
         public readonly int y1;
