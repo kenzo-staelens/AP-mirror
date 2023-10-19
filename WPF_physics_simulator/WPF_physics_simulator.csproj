@@ -7,4 +7,23 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="3DTools" Version="1.0.0" />
+    <PackageReference Include="HelixToolkit" Version="2.24.0" />
+    <PackageReference Include="HelixToolkit.Wpf" Version="2.24.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Components\Components.csproj" />
+    <ProjectReference Include="..\Generators\Generators.csproj" />
+    <ProjectReference Include="..\Globals\Globals.csproj" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <ContentWithTargetPath Include="..\default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>%(Filename)%(Extension)</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+
 </Project>

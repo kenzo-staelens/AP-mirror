@@ -3,10 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WPF_physics_simulator"
+        xmlns:local="clr-namespace:WPF_physics_simulator" xmlns:HelixToolkit="http://helix-toolkit.org/wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <HelixToolkit:HelixViewport3D ZoomExtentsWhenLoaded="True" Name="viewport3D1">
+            <HelixToolkit:HelixViewport3D.Camera>
+                <PerspectiveCamera Position="0 0 50"
+                           LookDirection="0 0 -25"
+                           UpDirection="0 1 0"/>
+            </HelixToolkit:HelixViewport3D.Camera>
+            <HelixToolkit:SunLight/>
+            <ModelVisual3D x:Name="model3dContainer"/>
+            <HelixToolkit:GridLinesVisual3D Width="8" Length="8" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
+        </HelixToolkit:HelixViewport3D>
     </Grid>
 </Window>
