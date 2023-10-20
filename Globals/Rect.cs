@@ -12,6 +12,7 @@ namespace Globals {
         public readonly int y2;
         public readonly int source_cell;
         public bool Mark;
+        public bool Collides;
         public Rect(int x1, int y1, int x2, int y2, int source_cell) {
             this.x1 = x1;
             this.y1 = y1;
@@ -22,5 +23,6 @@ namespace Globals {
         }
 
         public void mark(bool val) { this.Mark = val; }
+        public void collides(bool val) { this.Collides = val; }
     }
 }

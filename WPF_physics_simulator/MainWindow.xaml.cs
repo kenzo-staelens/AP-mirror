@@ -53,19 +53,19 @@ namespace WPF_physics_simulator {
         private void OnKeyDownHandler(object sender, KeyEventArgs e) {
             if (e.Key == Key.O) {
                 //AngleY -= Math.PI / 45;//2 graden incline
-                ball.Y -= 100;
+                ball.Y -= 10;
             }
             if (e.Key == Key.K) {
                 //AngleX -= Math.PI / 45;//2 graden incline
-                ball.X -= 100;
+                ball.X -= 10;
             }
             if (e.Key == Key.L) {
                 //AngleY += Math.PI / 45;//2 graden incline
-                ball.Y += 100;
+                ball.Y += 10;
             }
             if (e.Key == Key.M) {
                 //AngleX += Math.PI / 45;//2 graden incline
-                ball.X += 100;
+                ball.X += 10;
             }
             e.Handled = true;
         }
@@ -141,7 +141,7 @@ namespace WPF_physics_simulator {
                 if (rect.Mark) {
                     model.Material = Materials.Red;
                 }
-                else model.Material = Materials.White;
+                if(rect.Collides) model.Material = Materials.Green;
                 group.Children.Add(model);
             }
 
@@ -184,7 +184,7 @@ namespace WPF_physics_simulator {
 
         public static GeometryModel3D CreateGeometry(double x1, double y1, double  x2, double y2, double height, double height_start) {
             GeometryModel3D model = new() {
-                //Material = Materials.White,
+                Material = Materials.White,
                 Geometry = new MeshGeometry3D {
                     Positions = new Point3DCollection {
                         new Point3D(x1, -y1, height_start),

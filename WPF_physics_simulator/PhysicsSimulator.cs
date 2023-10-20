@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Globals;
 using Components;
 using System.ComponentModel;
+using System.Windows.Media.Media3D;
 
 namespace WPF_physics_simulator {
     public class PhysicsSimulator {
@@ -60,24 +61,26 @@ namespace WPF_physics_simulator {
                 cellIndex + CellCountHeight    ,
                 cellIndex + CellCountHeight + 1
             };
-            
-            Rect? collidingRect = null;
-            for(int i=0;i< this.Environment.Length;i++) {
+
+            List<Rect> collidingRects = new();
+            for(int i = 0; i < this.Environment.Length; i++) {
+                Environment[i].collides(false);
                 if (!validIndexes.Contains(Environment[i].source_cell)){
                     Environment[i].mark(false);
                     continue;//wall too far to check
                 }
                 Environment[i].mark(true);
                 if (CollidesWith(PhysicsEntity, Environment[i])){
-                    collidingRect = Environment[i];//ball collides with wall
-                    break;
+                    collidingRects.Add(Environment[i]);//ball collides with wall
+                    Environment[i].collides(true);
                 }
             }
 
-            Vector[]? CollisionVectors = CalculateCollisionVector(collidingRect);
+            List<Vector[]>? CollisionVectors = CalculateCollisionVectors(collidingRects);
             if (CollisionVectors != null) {
-                //physicsComponent.Velocity = CollisionVectors[0];
-                //physicsComponent.Acceleration = CollisionVectors[1]; //resets acceleration in collision direction
+                //CollisionVector = aggregate CollisionVectors
+                //physicsComponent.Velocity = CollisionVector[0];
+                //physicsComponent.Acceleration = CollisionVector[1]; //resets acceleration in collision direction
             }
 
             if (Math.Abs(physicsComponent.Velocity.X) > max_velocity) {
@@ -103,8 +106,8 @@ namespace WPF_physics_simulator {
             return physicsComponent;//for printing statistics
         }
 
-        private Vector[]? CalculateCollisionVector(Rect? collidingRect) {
-            if (collidingRect == null) return null;
+        private List<Vector[]>? CalculateCollisionVectors(List<Rect> collidingRects) {
+            if (collidingRects.Count == 0) return null;
             return null;
             //todo calculate collision
             //maakt gebruik van velocity vector
