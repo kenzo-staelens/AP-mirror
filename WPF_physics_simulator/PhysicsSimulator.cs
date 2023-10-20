@@ -16,13 +16,20 @@ namespace WPF_physics_simulator {
         private double PhysicsMass;
         private double max_velocity = 0.5;
         private double max_acc = 0.05;
+        private int CellCountWidth;
+        private int CellCountHeight;
+        private int CellSize;
 
-        public PhysicsSimulator(Rect[] environment, Ball ball) {
+
+        public PhysicsSimulator(Rect[] environment, Ball ball, int cellCountWidth, int cellCountHeight, int cellsize) {
             this.Environment = environment; //assumption walls are immovable
             this.PhysicsEntity = ball;
             this.Elasticity = 0;//in interval [0,1]
             this.g = 9.81;//N
             this.PhysicsMass = 5e8;
+            this.CellCountWidth = cellCountWidth;//optimization data
+            this.CellCountHeight = cellCountHeight;
+            this.CellSize = cellsize;
         }
 
         private T ConvertNullable<T>(object? nullable, T default_obj) {
@@ -37,15 +44,32 @@ namespace WPF_physics_simulator {
 
             physicsComponent.Force.X = g * Math.Sin(AngleX);
             physicsComponent.Force.Y = g * Math.Sin(AngleY);
-            
 
+            int cellIndex_width = (int)Math.Floor(PhysicsEntity.X / CellSize);
+            int cellIndex_height = (int)Math.Floor(PhysicsEntity.Y / CellSize);
+            int cellIndex = cellIndex_height + cellIndex_width*CellCountHeight;
+
+            int[] validIndexes = new int[] {
+                cellIndex - CellCountHeight - 1,
+                cellIndex - CellCountHeight    ,
+                cellIndex - CellCountHeight + 1,
+                cellIndex                   - 1,
+                cellIndex                      ,
+                cellIndex                   + 1,
+                cellIndex + CellCountHeight - 1,
+                cellIndex + CellCountHeight    ,
+                cellIndex + CellCountHeight + 1
+            };
+            
             Rect? collidingRect = null;
-            foreach(Rect rect in this.Environment) {
-                //if (ball too far){
-                //  continue;
-                //}
-                if (CollidesWith(PhysicsEntity, rect)){
-                    collidingRect = rect;
+            for(int i=0;i< this.Environment.Length;i++) {
+                if (!validIndexes.Contains(Environment[i].source_cell)){
+                    Environment[i].mark(false);
+                    continue;//wall too far to check
+                }
+                Environment[i].mark(true);
+                if (CollidesWith(PhysicsEntity, Environment[i])){
+                    collidingRect = Environment[i];//ball collides with wall
                     break;
                 }
             }

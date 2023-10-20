@@ -37,26 +37,35 @@ namespace WPF_physics_simulator {
             IMazeGenerator generator = factory.Create(MazeGeneratorTypes.Static, constructionData);
             
             this.maze = generator.Generate();
-            this.ball = new(cellsize/2, cellsize/2, cellsize/4, new IComponent[] {new PhysicsComponent()});//x,y,size (=radius), physicscomponent
-            this.physicsRectangles = CalculatePhysicsObjects(cellsize);
-            this.physicsSimulator = new(physicsRectangles, ball);
-            stopwatch = new();
-            stopwatch.Start();
-            CompositionTarget.Rendering += loop;
+            this.ball = new(cellsize/2, cellsize/2+1000, cellsize/4, new IComponent[] {new PhysicsComponent()});//x,y,size (=radius), physicscomponent
+            try {
+                this.physicsRectangles = CalculatePhysicsObjects(cellsize);
+                this.physicsSimulator = new(physicsRectangles, ball, maze.Width, maze.Height, cellsize);
+                stopwatch = new();
+                stopwatch.Start();
+                CompositionTarget.Rendering += loop;
+            } catch(Exception ex) {
+                Writable.Content = ex.Message;
+            }
+            
         }
 
         private void OnKeyDownHandler(object sender, KeyEventArgs e) {
             if (e.Key == Key.O) {
-                AngleY -= Math.PI / 45;//2 graden incline
+                //AngleY -= Math.PI / 45;//2 graden incline
+                ball.Y -= 100;
             }
             if (e.Key == Key.K) {
-                AngleX -= Math.PI / 45;//2 graden incline
+                //AngleX -= Math.PI / 45;//2 graden incline
+                ball.X -= 100;
             }
             if (e.Key == Key.L) {
-                AngleY += Math.PI / 45;//2 graden incline
+                //AngleY += Math.PI / 45;//2 graden incline
+                ball.Y += 100;
             }
             if (e.Key == Key.M) {
-                AngleX += Math.PI / 45;//2 graden incline
+                //AngleX += Math.PI / 45;//2 graden incline
+                ball.X += 100;
             }
             e.Handled = true;
         }
@@ -65,10 +74,10 @@ namespace WPF_physics_simulator {
             try {
                 long millis = stopwatch.ElapsedMilliseconds;
                 millis = 15;
-                Render(cellsize/2);
                 var pc = physicsSimulator.Simulate(AngleX, AngleY, millis);
+                Render(cellsize/2);
                 stopwatch.Restart();
-                Writable.Content = $"x:{AngleX} y:{AngleY}\nmillis:{millis}\nForce: {pc.Force.X} {pc.Force.Y}\nVelocity {pc.Velocity.X} {pc.Velocity.Y}\nAcceleration {pc.Acceleration.X} {pc.Acceleration.Y}";
+                Writable.Content = $"x:{AngleX} y:{AngleY}\nmillis:{millis}\nForce: {pc.Force.X} {pc.Force.Y}\nVelocity {pc.Velocity.X} {pc.Velocity.Y}\nAcceleration {pc.Acceleration.X} {pc.Acceleration.Y}\nPos {ball.X} {ball.Y}";
             }
             catch(Exception ex) {
                 Writable.Content = ex.Message;
@@ -85,6 +94,7 @@ namespace WPF_physics_simulator {
             int counter = 0;
             Globals.Rect rect;
             foreach (Cell c in this.maze.maze) {
+                
                 wdc = (WallDataComponent?)(c.GetComponent(typeof(WallDataComponent)));
                 wdc ??= new WallDataComponent(2);
                 if (c.Walls[0]) {
@@ -97,21 +107,25 @@ namespace WPF_physics_simulator {
                 }
                 counter++;
             }
-            counter = maze.Width * (maze.Height - 1)+1;
+
+            counter = maze.Width * (maze.Height - 1)-1;
+            for (int i = 0; i < maze.Height; i++) {
+                Cell c = maze.maze[maze.Width - 1,i];
+                wdc = (WallDataComponent?)(c.GetComponent(typeof(WallDataComponent)));
+                wdc ??= new WallDataComponent(2);
+                rect = new Globals.Rect((c.x + 1) * cellsize - ((WallDataComponent)wdc).Width, c.y * cellsize, (c.x + 1) * cellsize, (c.y + 1) * cellsize, counter);
+                if (!c.Walls[1]) continue;
+                rects.Add(rect);
+                counter++;
+            }
+            counter = maze.Height-1;
             for (int i = 0; i < maze.Width; i++) {
+                Writable.Content = ($"{maze.maze[i, maze.Height - 1].x} {maze.maze[i, maze.Height - 1].y} {counter}");
                 Cell c = maze.maze[i, maze.Height - 1];
                 wdc = (WallDataComponent?)(c.GetComponent(typeof(WallDataComponent)));
                 wdc ??= new WallDataComponent(2);
                 rect = new Globals.Rect(c.x * cellsize, (c.y + 1) * cellsize - ((WallDataComponent)wdc).Width, (c.x + 1) * cellsize, (c.y + 1) * cellsize, counter);
-                rects.Add(rect);
-                counter++;
-            }
-            counter = maze.Width - 1;
-            for (int i = 0; i < maze.Height; i++) {
-                Cell c = maze.maze[maze.Width - 1, i];
-                wdc = (WallDataComponent?)(c.GetComponent(typeof(WallDataComponent)));
-                wdc ??= new WallDataComponent(2);
-                rect = new Globals.Rect((c.x + 1) * cellsize - ((WallDataComponent)wdc).Width, c.y * cellsize, (c.x + 1) * cellsize, (c.y + 1) * cellsize, counter);
+                if (!c.Walls[2]) continue;
                 rects.Add(rect);
                 counter += maze.Width;
             }
@@ -124,6 +138,10 @@ namespace WPF_physics_simulator {
             GeometryModel3D model;
             foreach (Globals.Rect rect in this.physicsRectangles) {
                 model = CreateGeometry(rect.x1, rect.y1, rect.x2, rect.y2, height);
+                if (rect.Mark) {
+                    model.Material = Materials.Red;
+                }
+                else model.Material = Materials.White;
                 group.Children.Add(model);
             }
 
@@ -166,7 +184,7 @@ namespace WPF_physics_simulator {
 
         public static GeometryModel3D CreateGeometry(double x1, double y1, double  x2, double y2, double height, double height_start) {
             GeometryModel3D model = new() {
-                Material = Materials.White,
+                //Material = Materials.White,
                 Geometry = new MeshGeometry3D {
                     Positions = new Point3DCollection {
                         new Point3D(x1, -y1, height_start),
