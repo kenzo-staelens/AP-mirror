@@ -27,9 +27,10 @@ namespace WPF_physics_simulator {
         private double AngleX;
         private double AngleY;
         private PhysicsSimulator physicsSimulator;
-        Stopwatch stopwatch;
+
+        private int cellsize = 100;
+        private Stopwatch stopwatch;
         public MainWindow() {
-            int cellsize = 100;
             InitializeComponent();
             MazeGeneratorFactory factory = new(new IComponent[] { new WallDataComponent(cellsize/5) });
             MazeConstructionComponent constructionData = new(-1, -1, "default.txt");// -1 to indicate unused
@@ -64,7 +65,7 @@ namespace WPF_physics_simulator {
             try {
                 long millis = stopwatch.ElapsedMilliseconds;
                 millis = 15;
-                Render(15);
+                Render(cellsize/2);
                 var pc = physicsSimulator.Simulate(AngleX, AngleY, millis);
                 stopwatch.Restart();
                 Writable.Content = $"x:{AngleX} y:{AngleY}\nmillis:{millis}\nForce: {pc.Force.X} {pc.Force.Y}\nVelocity {pc.Velocity.X} {pc.Velocity.Y}\nAcceleration {pc.Acceleration.X} {pc.Acceleration.Y}";
@@ -72,6 +73,10 @@ namespace WPF_physics_simulator {
             catch(Exception ex) {
                 Writable.Content = ex.Message;
             }
+        }
+
+        private double RadiansToDegrees(double radians) {
+            return radians / Math.PI * 90;
         }
 
         public Globals.Rect[] CalculatePhysicsObjects(int cellsize) {
@@ -121,29 +126,57 @@ namespace WPF_physics_simulator {
                 model = CreateGeometry(rect.x1, rect.y1, rect.x2, rect.y2, height);
                 group.Children.Add(model);
             }
-            
+
+            model = CreateGeometry(0, 0, cellsize * maze.Width, cellsize * maze.Height, 15,-15.001);
+            group.Children.Add(model);
+
             var builder = new MeshBuilder(true, true);
             var position = new Point3D(this.ball.X, - this.ball.Y, this.ball.Size);
             builder.AddSphere(position, ball.Size, 15, 15);
 
             model = new GeometryModel3D(builder.ToMesh(), Materials.Red);
             group.Children.Add(model);
+            
+            group.Transform = GetTransformation();
             model3dContainer.Content = group;
         }
 
-        public static GeometryModel3D CreateGeometry(double x1, double y1, double  x2, double y2, double height) {
+        private Transform3DGroup GetTransformation() {
+            var translateTransform = new TranslateTransform3D(-cellsize * maze.Width / 2, cellsize * maze.Height / 2, 0);
+            RotateTransform3D RotateTransform3D_X = new RotateTransform3D();
+            AxisAngleRotation3D AxisAngleRotation3d_X = new AxisAngleRotation3D();
+            AxisAngleRotation3d_X.Axis = new Vector3D(0, 1, 0);
+            AxisAngleRotation3d_X.Angle = RadiansToDegrees(AngleX);
+            RotateTransform3D_X.Rotation = AxisAngleRotation3d_X;
+            RotateTransform3D RotateTransform3D_Y = new RotateTransform3D();
+            AxisAngleRotation3D AxisAngleRotation3d_Y = new AxisAngleRotation3D();
+            AxisAngleRotation3d_Y.Axis = new Vector3D(1, 0, 0);
+            AxisAngleRotation3d_Y.Angle = RadiansToDegrees(AngleY);
+            RotateTransform3D_Y.Rotation = AxisAngleRotation3d_Y;
+            var transformGroup = new Transform3DGroup();
+            transformGroup.Children.Add(translateTransform);
+            transformGroup.Children.Add(RotateTransform3D_X);
+            transformGroup.Children.Add(RotateTransform3D_Y);
+            return transformGroup;
+        }
+
+        public static GeometryModel3D CreateGeometry(double x1, double y1, double x2, double y2, double height) {
+            return CreateGeometry(x1, y1, x2, y2, height, 0);
+        }
+
+        public static GeometryModel3D CreateGeometry(double x1, double y1, double  x2, double y2, double height, double height_start) {
             GeometryModel3D model = new() {
                 Material = Materials.White,
                 Geometry = new MeshGeometry3D {
                     Positions = new Point3DCollection {
-                        new Point3D(x1, -y1, 0),
-                        new Point3D(x2, -y1, 0),
-                        new Point3D(x1, -y1, height),
-                        new Point3D(x2, -y1, height),
-                        new Point3D(x1, -y2, 0),
-                        new Point3D(x2, -y2, 0),
-                        new Point3D(x1, -y2, height),
-                        new Point3D(x2, -y2, height)
+                        new Point3D(x1, -y1, height_start),
+                        new Point3D(x2, -y1, height_start),
+                        new Point3D(x1, -y1, height_start + height),
+                        new Point3D(x2, -y1, height_start + height),
+                        new Point3D(x1, -y2, height_start),
+                        new Point3D(x2, -y2, height_start),
+                        new Point3D(x1, -y2, height_start + height),
+                        new Point3D(x2, -y2, height_start + height)
                     },
                     TriangleIndices = new Int32Collection {
                         1,3,2,
