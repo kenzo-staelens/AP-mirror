@@ -15,5 +15,9 @@
             }
             array = new_array;
         }
+
+        public static double RadiansToDegrees(double radians) {
+            return radians / Math.PI * 90;
+        }
     }
 }
