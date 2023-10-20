@@ -7,6 +7,7 @@ using Globals;
 using Components;
 using System.ComponentModel;
 using System.Windows.Media.Media3D;
+using System.Threading;
 
 namespace WPF_physics_simulator {
     public class PhysicsSimulator {
@@ -15,8 +16,6 @@ namespace WPF_physics_simulator {
         private double Elasticity;
         private double g; // zwaartekracht cte
         private double PhysicsMass;
-        private double max_velocity = 0.5;
-        private double max_acc = 0.05;
         private int CellCountWidth;
         private int CellCountHeight;
         private int CellSize;
@@ -25,9 +24,9 @@ namespace WPF_physics_simulator {
         public PhysicsSimulator(Rect[] environment, Ball ball, int cellCountWidth, int cellCountHeight, int cellsize) {
             this.Environment = environment; //assumption walls are immovable
             this.PhysicsEntity = ball;
-            this.Elasticity = 0;//in interval [0,1]
+            this.Elasticity = 0.1;//in interval [0,1]
             this.g = 9.81;//N
-            this.PhysicsMass = 5e8;
+            this.PhysicsMass = 2e7;
             this.CellCountWidth = cellCountWidth;//optimization data
             this.CellCountHeight = cellCountHeight;
             this.CellSize = cellsize;
@@ -76,26 +75,8 @@ namespace WPF_physics_simulator {
                 }
             }
 
-            List<Vector[]>? CollisionVectors = CalculateCollisionVectors(collidingRects);
-            if (CollisionVectors != null) {
-                //CollisionVector = aggregate CollisionVectors
-                //physicsComponent.Velocity = CollisionVector[0];
-                //physicsComponent.Acceleration = CollisionVector[1]; //resets acceleration in collision direction
-            }
-
-            if (Math.Abs(physicsComponent.Velocity.X) > max_velocity) {
-                physicsComponent.Velocity.X = max_velocity*Math.Sign(physicsComponent.Velocity.X);
-            }
-            if (Math.Abs(physicsComponent.Velocity.Y) > max_velocity) {
-                physicsComponent.Velocity.Y = max_velocity * Math.Sign(physicsComponent.Velocity.Y);
-            }
-
-            if (Math.Abs(physicsComponent.Acceleration.X) > max_acc) {
-                physicsComponent.Acceleration.X = max_acc * Math.Sign(physicsComponent.Acceleration.X);
-            }
-            if (Math.Abs(physicsComponent.Acceleration.Y) > max_acc) {
-                physicsComponent.Acceleration.Y = max_acc*Math.Sign(physicsComponent.Acceleration.Y);
-            }
+            //Vector[]? CollisionVectors =
+            CalculateCollisionVectors(collidingRects, physicsComponent);
 
             PhysicsEntity.X += physicsComponent.Velocity.X * dt_millis;// + physicsComponent.Acceleration.X * dt_millis * dt_millis / 2;
             PhysicsEntity.Y += physicsComponent.Velocity.Y * dt_millis;// + physicsComponent.Acceleration.X * dt_millis * dt_millis / 2;
@@ -106,16 +87,40 @@ namespace WPF_physics_simulator {
             return physicsComponent;//for printing statistics
         }
 
-        private List<Vector[]>? CalculateCollisionVectors(List<Rect> collidingRects) {
-            if (collidingRects.Count == 0) return null;
-            return null;
+        private void CalculateCollisionVectors(List<Rect> collidingRects, PhysicsComponent physics) {
+            bool collidesTop = false;
+            bool collidesRight = false;
+            bool collidesBottom = false;
+            bool collidesLeft = false;
+            if (collidingRects.Count == 0) return;// null;
+            for (int i = 0; i < collidingRects.Count; i++) {
+                if (PhysicsEntity.Y <= collidingRects[i].y1) { collidesTop = true; }//top collision -> horizontal
+                if (PhysicsEntity.Y >= collidingRects[i].y2) { collidesBottom = true; }//bottom collision -> horizontal
+                if (PhysicsEntity.X >= collidingRects[i].x2) { collidesRight = true; }//right collision -> vertical
+                if (PhysicsEntity.X <= collidingRects[i].x1) { collidesLeft= true;}//left collision -> vertical
+            }
             //todo calculate collision
             //maakt gebruik van velocity vector
-
-            //if ladder -> collision = verticaal of horizontaal
-            // -> flip velocity x/y depending on horizontal/vertical
-            //multiply by elasticity on reflecting vector component
-            //return new Vector(0, 0);
+            if (collidesTop) {
+                //flip Y axis
+                if(physics.Velocity.Y>0) physics.Velocity.Y = Math.Min(-physics.Velocity.Y * Elasticity,0);
+                physics.Acceleration.Y = Math.Min(0, physics.Acceleration.Y);
+            }
+            if (collidesBottom) {
+                //flip Y axis
+                if (physics.Velocity.Y < 0) physics.Velocity.Y = Math.Max(-physics.Velocity.Y * Elasticity,0);
+                physics.Acceleration.Y = Math.Max(0, physics.Acceleration.Y);
+            }
+            if (collidesRight) {
+                //flip X axis
+                if(physics.Velocity.X < 0) physics.Velocity.X = Math.Max(-physics.Velocity.X * Elasticity,0);
+                physics.Acceleration.X = Math.Max(0, physics.Acceleration.X);
+            }
+            if (collidesLeft) {
+                //flip X axis
+                if (physics.Velocity.X > 0) physics.Velocity.X = Math.Min(-physics.Velocity.X * Elasticity,0);
+                physics.Acceleration.X = Math.Min(0, physics.Acceleration.X);
+            }
         }
 
         //see: https://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection

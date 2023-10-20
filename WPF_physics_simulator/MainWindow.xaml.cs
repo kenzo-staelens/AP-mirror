@@ -37,7 +37,7 @@ namespace WPF_physics_simulator {
             IMazeGenerator generator = factory.Create(MazeGeneratorTypes.Static, constructionData);
             
             this.maze = generator.Generate();
-            this.ball = new(cellsize/2, cellsize/2+1000, cellsize/4, new IComponent[] {new PhysicsComponent()});//x,y,size (=radius), physicscomponent
+            this.ball = new(cellsize/2, cellsize/2, cellsize/4, new IComponent[] {new PhysicsComponent()});//x,y,size (=radius), physicscomponent
             try {
                 this.physicsRectangles = CalculatePhysicsObjects(cellsize);
                 this.physicsSimulator = new(physicsRectangles, ball, maze.Width, maze.Height, cellsize);
@@ -52,20 +52,20 @@ namespace WPF_physics_simulator {
 
         private void OnKeyDownHandler(object sender, KeyEventArgs e) {
             if (e.Key == Key.O) {
-                //AngleY -= Math.PI / 45;//2 graden incline
-                ball.Y -= 10;
+                AngleY -= Math.PI / 45;//2 graden incline
+                //ball.Y -= 10;
             }
             if (e.Key == Key.K) {
-                //AngleX -= Math.PI / 45;//2 graden incline
-                ball.X -= 10;
+                AngleX -= Math.PI / 45;//2 graden incline
+                //ball.X -= 10;
             }
             if (e.Key == Key.L) {
-                //AngleY += Math.PI / 45;//2 graden incline
-                ball.Y += 10;
+                AngleY += Math.PI / 45;//2 graden incline
+                //ball.Y += 10;
             }
             if (e.Key == Key.M) {
-                //AngleX += Math.PI / 45;//2 graden incline
-                ball.X += 10;
+                AngleX += Math.PI / 45;//2 graden incline
+                //ball.X += 10;
             }
             e.Handled = true;
         }
