@@ -13,6 +13,8 @@ using HelixToolkit.Wpf;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using System.Diagnostics;
 
 namespace WPF_physics_simulator {
     /// <summary>
@@ -22,16 +24,54 @@ namespace WPF_physics_simulator {
         private readonly Maze maze;
         private readonly Ball ball;
         private readonly Globals.Rect[] physicsRectangles;
+        private double AngleX;
+        private double AngleY;
+        private PhysicsSimulator physicsSimulator;
+        Stopwatch stopwatch;
         public MainWindow() {
+            int cellsize = 100;
             InitializeComponent();
-            MazeGeneratorFactory factory = new(new IComponent[] { new WallDataComponent(2) });
+            MazeGeneratorFactory factory = new(new IComponent[] { new WallDataComponent(cellsize/5) });
             MazeConstructionComponent constructionData = new(-1, -1, "default.txt");// -1 to indicate unused
             IMazeGenerator generator = factory.Create(MazeGeneratorTypes.Static, constructionData);
-            int cellsize = 10;
+            
             this.maze = generator.Generate();
-            this.ball = new(5, 5, cellsize/4);//x,y,size (=radius)
+            this.ball = new(cellsize/2, cellsize/2, cellsize/4, new IComponent[] {new PhysicsComponent()});//x,y,size (=radius), physicscomponent
             this.physicsRectangles = CalculatePhysicsObjects(cellsize);
-            Render(15);
+            this.physicsSimulator = new(physicsRectangles, ball);
+            stopwatch = new();
+            stopwatch.Start();
+            CompositionTarget.Rendering += loop;
+        }
+
+        private void OnKeyDownHandler(object sender, KeyEventArgs e) {
+            if (e.Key == Key.O) {
+                AngleY -= Math.PI / 45;//2 graden incline
+            }
+            if (e.Key == Key.K) {
+                AngleX -= Math.PI / 45;//2 graden incline
+            }
+            if (e.Key == Key.L) {
+                AngleY += Math.PI / 45;//2 graden incline
+            }
+            if (e.Key == Key.M) {
+                AngleX += Math.PI / 45;//2 graden incline
+            }
+            e.Handled = true;
+        }
+
+        private void loop(object Sender, EventArgs e) {
+            try {
+                long millis = stopwatch.ElapsedMilliseconds;
+                millis = 15;
+                Render(15);
+                var pc = physicsSimulator.Simulate(AngleX, AngleY, millis);
+                stopwatch.Restart();
+                Writable.Content = $"x:{AngleX} y:{AngleY}\nmillis:{millis}\nForce: {pc.Force.X} {pc.Force.Y}\nVelocity {pc.Velocity.X} {pc.Velocity.Y}\nAcceleration {pc.Acceleration.X} {pc.Acceleration.Y}";
+            }
+            catch(Exception ex) {
+                Writable.Content = ex.Message;
+            }
         }
 
         public Globals.Rect[] CalculatePhysicsObjects(int cellsize) {

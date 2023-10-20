@@ -4,14 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Globals {
+namespace Components {
     public class Vector {
-        public int X { get; set; }
-        public int Y { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
         public double Length {
             get {
                 return Math.Sqrt(X*X+ Y*Y);
             }
+        }
+
+        public Vector() : this(0, 0) { }
+
+        public Vector(double X, double Y) {
+            this.X = X;
+            this.Y = Y;
         }
     }
 }

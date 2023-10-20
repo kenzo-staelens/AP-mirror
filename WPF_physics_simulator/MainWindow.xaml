@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_physics_simulator" xmlns:HelixToolkit="http://helix-toolkit.org/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        KeyDown="OnKeyDownHandler">
     <Grid>
+        <Label Name="Writable"/>
         <HelixToolkit:HelixViewport3D ZoomExtentsWhenLoaded="True" Name="viewport3D1">
             <HelixToolkit:HelixViewport3D.Camera>
                 <PerspectiveCamera Position="0 0 50"
