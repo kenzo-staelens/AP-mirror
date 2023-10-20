@@ -105,7 +105,7 @@ namespace WPF_physics_simulator {
                 wdc = (WallDataComponent?)(c.GetComponent(typeof(WallDataComponent)));
                 wdc ??= new WallDataComponent(defaultWallWidth);
                 if (c.Walls[0]) {
-                    rect = new Globals.Rect(c.x * cellsize, c.y * cellsize, (c.x + 1) * cellsize, c.y * cellsize + ((WallDataComponent)wdc).Width, counter);
+                    rect = new Globals.Rect(c.x * cellsize+0.1, c.y * cellsize, (c.x + 1) * cellsize, c.y * cellsize + ((WallDataComponent)wdc).Width, counter);
                     rects.Add(rect);
                 }
                 if (c.Walls[3]) {

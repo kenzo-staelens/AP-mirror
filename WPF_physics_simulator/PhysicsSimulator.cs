@@ -9,9 +9,10 @@ namespace WPF_physics_simulator {
         public Rect[] Environment;
         public Ball PhysicsEntity;
 
-        private static readonly double Elasticity = 0.1;
+        private static readonly double Elasticity = 0.2;
         private static readonly double g = 9.81; // zwaartekracht cte
         private static readonly double PhysicsMass =2e7;
+        private static readonly double minimumCollisionVelocity = 1e-2; //used to unstuck on edges
 
         private readonly int CellCountHeight;
         private readonly int CellSize;
@@ -57,7 +58,7 @@ namespace WPF_physics_simulator {
             List<Rect> collidingRects = new();
             for(int i = 0; i < this.Environment.Length; i++) {
                 Environment[i].collides(false);
-                if (!validIndexes.Contains(Environment[i].source_cell)){
+                if (!validIndexes.Contains<int>(Environment[i].source_cell)){
                     Environment[i].mark(false);
                     continue;//wall too far to check
                 }
@@ -94,22 +95,22 @@ namespace WPF_physics_simulator {
 
             if (collidesTop) {
                 //flip Y axis
-                if(physics.Velocity.Y>0) physics.Velocity.Y = Math.Min(-physics.Velocity.Y * Elasticity,0);
+                if(physics.Velocity.Y>0) physics.Velocity.Y = Math.Min(-physics.Velocity.Y * Elasticity,-minimumCollisionVelocity);
                 physics.Acceleration.Y = Math.Min(0, physics.Acceleration.Y);
             }
             if (collidesBottom) {
                 //flip Y axis
-                if (physics.Velocity.Y < 0) physics.Velocity.Y = Math.Max(-physics.Velocity.Y * Elasticity,0);
+                if (physics.Velocity.Y < 0) physics.Velocity.Y = Math.Max(-physics.Velocity.Y * Elasticity, minimumCollisionVelocity);
                 physics.Acceleration.Y = Math.Max(0, physics.Acceleration.Y);
             }
             if (collidesRight) {
                 //flip X axis
-                if(physics.Velocity.X < 0) physics.Velocity.X = Math.Max(-physics.Velocity.X * Elasticity,0);
+                if(physics.Velocity.X < 0) physics.Velocity.X = Math.Max(-physics.Velocity.X * Elasticity, minimumCollisionVelocity);
                 physics.Acceleration.X = Math.Max(0, physics.Acceleration.X);
             }
             if (collidesLeft) {
                 //flip X axis
-                if (physics.Velocity.X > 0) physics.Velocity.X = Math.Min(-physics.Velocity.X * Elasticity,0);
+                if (physics.Velocity.X > 0) physics.Velocity.X = Math.Min(-physics.Velocity.X * Elasticity,-minimumCollisionVelocity);
                 physics.Acceleration.X = Math.Min(0, physics.Acceleration.X);
             }
         }

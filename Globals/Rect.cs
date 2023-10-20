@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Globals {
     public struct Rect {
-        public readonly int x1;
-        public readonly int x2;
-        public readonly int y1;
-        public readonly int y2;
+        public readonly double x1;
+        public readonly double x2;
+        public readonly double y1;
+        public readonly double y2;
         public readonly int source_cell;
         public bool Mark;
         public bool Collides;
-        public Rect(int x1, int y1, int x2, int y2, int source_cell) {
+        public Rect(double x1, double y1, double x2, double y2, int source_cell) {
             this.x1 = x1;
             this.y1 = y1;
             this.x2 = x2;
