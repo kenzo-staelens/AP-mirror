@@ -12,7 +12,7 @@ namespace WPF_physics_simulator {
         private static readonly double Elasticity = 0.2;
         private static readonly double g = 9.81; // zwaartekracht cte
         private static readonly double PhysicsMass =2e7;
-        private static readonly double minimumCollisionVelocity = 1e-2; //used to unstuck on edges
+        private static readonly double minimumCollisionVelocity = 8e-3; //used to unstuck on edges/corner collision
 
         private readonly int CellCountHeight;
         private readonly int CellSize;

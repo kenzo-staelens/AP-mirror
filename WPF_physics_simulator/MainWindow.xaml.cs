@@ -25,6 +25,7 @@ namespace WPF_physics_simulator {
         private static readonly int defaultWallWidth = cellsize / 5;
         private static readonly int defaultWallHeight = cellsize / 2;
         private static readonly double inclineDelta = Math.PI / 45; //2 graden incline
+        private static int Framecountmax=30;
 
         //initialized objects
         private readonly Maze maze;
@@ -34,9 +35,12 @@ namespace WPF_physics_simulator {
         private readonly Stopwatch stopwatch;
         private GeometryModel3D[] renderingObjects;
 
+
         //tracked values
         private double AngleX;
         private double AngleY;
+        private int FPS;
+        private int Framecounter;
 
         private static readonly bool debug = false;
 
@@ -56,6 +60,8 @@ namespace WPF_physics_simulator {
                 this.physicsRectangles = CalculatePhysicsObjects(cellsize);
                 this.renderingObjects = CalculateRenderingObjects(cellsize);
                 this.physicsSimulator = new(physicsRectangles, ball, maze, cellsize);
+                this.FPS = 0;
+                this.Framecounter = 0;
                 
                 stopwatch = new();
                 stopwatch.Start();
@@ -85,11 +91,16 @@ namespace WPF_physics_simulator {
         private void Loop(object? Sender, EventArgs e) {
             try {
                 long millis = stopwatch.ElapsedMilliseconds;
-                millis = 15;
                 var pc = physicsSimulator.Simulate(AngleX, AngleY, millis);
                 Render(defaultWallHeight);
                 stopwatch.Restart();
-                if(debug) Writable.Content = $"x:{AngleX} y:{AngleY}\nmillis:{millis}\nForce: {pc.Force.X} {pc.Force.Y}\nVelocity {pc.Velocity.X} {pc.Velocity.Y}\nAcceleration {pc.Acceleration.X} {pc.Acceleration.Y}\nPos {ball.X} {ball.Y}";
+                if (Framecounter >= Framecountmax) {
+                    Framecounter %= Framecountmax;
+                    this.FPS = (int) Math.Round(1000d / millis);
+                }
+                Writable.Content = $"{this.FPS} FPS";
+                if(debug) Writable.Content += $"\nx:{AngleX} y:{AngleY}\nmillis:{millis}\nForce: {pc.Force.X} {pc.Force.Y}\nVelocity {pc.Velocity.X} {pc.Velocity.Y}\nAcceleration {pc.Acceleration.X} {pc.Acceleration.Y}\nPos {ball.X} {ball.Y}";
+                Framecounter++;//stabilizes FPS counter
             }
             catch(Exception ex) {
                 Writable.Content = ex.Message;
