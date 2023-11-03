@@ -28,11 +28,13 @@ namespace WPF_physics_simulator {
         private static int Framecountmax=30;
 
         //initialized objects
-        private readonly Maze maze;
-        private readonly Ball ball;
-        private readonly Globals.Rect[] physicsRectangles;
-        private readonly PhysicsSimulator physicsSimulator;
         private readonly Stopwatch stopwatch;
+        private readonly IMazeGenerator generator;
+        private  Maze maze;
+        private Ball ball;
+        private Globals.Rect[] physicsRectangles;
+        private PhysicsSimulator physicsSimulator;
+        
         private GeometryModel3D[] renderingObjects;
 
 
@@ -42,7 +44,7 @@ namespace WPF_physics_simulator {
         private int FPS;
         private int Framecounter;
 
-        private static readonly bool debug = false;
+        private static readonly bool debug = true;
 
 #pragma warning disable CS8618
         public MainWindow() {
@@ -51,17 +53,9 @@ namespace WPF_physics_simulator {
                 //init objects
                 MazeGeneratorFactory factory = new(new IComponent[] { new WallDataComponent(defaultWallWidth) });
                 MazeConstructionComponent constructionData = new(-1, -1, "default.txt");// -1 to indicate unused
-                IMazeGenerator generator = factory.Create(MazeGeneratorTypes.Static, constructionData);
+                this.generator = factory.Create(MazeGeneratorTypes.Static, constructionData);
 
-                this.maze = generator.Generate();
-                this.ball = new(cellsize/2, cellsize/2, cellsize/4, new IComponent[] {new PhysicsComponent()});//x,y,size (=radius), physicscomponent
-                
-                //precompute physics & rendering objects
-                this.physicsRectangles = CalculatePhysicsObjects(cellsize);
-                this.renderingObjects = CalculateRenderingObjects(cellsize);
-                this.physicsSimulator = new(physicsRectangles, ball, maze, cellsize);
-                this.FPS = 0;
-                this.Framecounter = 0;
+                init();
                 
                 stopwatch = new();
                 stopwatch.Start();
@@ -71,18 +65,30 @@ namespace WPF_physics_simulator {
             }
         }
 #pragma warning restore CS8618
+        public void init() {
+            this.maze = this.generator.Generate();
+            this.ball = new(cellsize / 2, cellsize / 2, cellsize / 4, new IComponent[] { new PhysicsComponent() });//x,y,size (=radius), physicscomponent
 
+            //precompute physics & rendering objects
+            this.physicsRectangles = CalculatePhysicsObjects(cellsize);
+            this.renderingObjects = CalculateRenderingObjects(cellsize);
+            this.physicsSimulator = new(physicsRectangles, ball, maze, cellsize);
+            this.FPS = 0;
+            this.Framecounter = 0;
+            this.AngleX = 0;
+            this.AngleY = 0;
+        }
         private void OnKeyDownHandler(object Sender, KeyEventArgs e) {
             if (e.Key == Key.O) {
                 AngleY -= inclineDelta;
             }
-            if (e.Key == Key.K) {
+            else if (e.Key == Key.K) {
                 AngleX -= inclineDelta;
             }
-            if (e.Key == Key.L) {
+            else if (e.Key == Key.L) {
                 AngleY += inclineDelta;
             }
-            if (e.Key == Key.M) {
+            else if (e.Key == Key.M) {
                 AngleX += inclineDelta;
             }
             e.Handled = true;
@@ -90,6 +96,7 @@ namespace WPF_physics_simulator {
 
         private void Loop(object? Sender, EventArgs e) {
             try {
+                if (physicsSimulator.Solved) init();//generate new maze & reset environment
                 long millis = stopwatch.ElapsedMilliseconds;
                 var pc = physicsSimulator.Simulate(AngleX, AngleY, millis);
                 Render(defaultWallHeight);

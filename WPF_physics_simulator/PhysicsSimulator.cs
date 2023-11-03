@@ -8,6 +8,7 @@ namespace WPF_physics_simulator {
     public class PhysicsSimulator {
         public Rect[] Environment;
         public Ball PhysicsEntity;
+        public bool Solved { get; private set; }
 
         private static readonly double Elasticity = 0.2;
         private static readonly double g = 9.81; // zwaartekracht cte
@@ -16,6 +17,7 @@ namespace WPF_physics_simulator {
 
         private readonly int CellCountHeight;
         private readonly int CellSize;
+        private readonly int SolveCell;
 
         public PhysicsSimulator(Rect[] environment, Ball ball, Maze maze, int cellsize) {
             this.Environment = environment; //assumption walls are immovable
@@ -24,6 +26,8 @@ namespace WPF_physics_simulator {
             //optimization data
             this.CellCountHeight = maze.Height;
             this.CellSize = cellsize;
+            this.SolveCell = maze.Width * maze.Height - 1;
+            this.Solved = false;
         }
 
         private T ConvertNullable<T>(object? nullable, T default_obj) {
@@ -42,6 +46,8 @@ namespace WPF_physics_simulator {
             int cellIndex_width = (int)Math.Floor(PhysicsEntity.X / CellSize);
             int cellIndex_height = (int)Math.Floor(PhysicsEntity.Y / CellSize);
             int cellIndex = cellIndex_height + cellIndex_width*CellCountHeight;
+
+            if (cellIndex == SolveCell) this.Solved = true;
 
             int[] validIndexes = new int[] {
                 cellIndex - CellCountHeight - 1,
