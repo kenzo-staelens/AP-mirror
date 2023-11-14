@@ -272,7 +272,7 @@ testen op botsingen tussen een bal (cirkel) en een muur(=rechthoek) wordt bepaal
   - O -> tilt naar voor (angleY -)
   - K -> tilt naar links (angleX -)
   - L -> tilt naar achter (angleY +)
-  - M -> tilt naar rects (angleX +)  
+  - M -> tilt naar rechts (angleX +)  
   __increments van 2 graden__
 
 - als het doolhof opgelost is wordt de init functie (zie program flow) opnieuw opgeroepen, zo wordt een nieuw doolhof in startcondities gegenereerd
